@@ -41,7 +41,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $prefix = '';
         foreach ($values as $key => $val) {
             $str1 .= $prefix . '`' . $key . '`';
-            if (empty($val)) {
+            if ($val === null || $val === '') {
                 $str2 .= $prefix . 'NULL';
             } else {
                 $str2 .= $prefix . '\'' . str_replace('\'', '', $val) . '\'';
