@@ -48,7 +48,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
                 if ($val === null) {
                     $sql2 .= $p2 . 'NULL';
                 } else {
-                    $sql2 .= $p2 . '\'' . str_replace('\'', '', $val) . '\'';
+                    $sql2 .= $p2 . "'" . str_replace("'", "''", $val) . "'";
                 }
                 $p2 = ',';
             }
