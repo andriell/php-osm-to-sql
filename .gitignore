@@ -1,0 +1,6 @@
+.idea/
+vendor/
+*.phar
+*.tar
+*.tar.gz
+composer.lock
