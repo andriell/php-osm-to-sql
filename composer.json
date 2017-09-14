@@ -1,6 +1,6 @@
 {
     "name": "andriell/osm2sql",
-    "description": "Tar / tar.gz writer. You can use it to work with large files without creating temporary files",
+    "description": "Export OSM XML in to SQL",
     "type": "library",
     "keywords": [
         "osm",
