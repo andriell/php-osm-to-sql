@@ -26,11 +26,11 @@ class LargeXmlReader
 
     public function parse()
     {
-        $parser = xml_parser_create("UTF-8");
+        $parser = xml_parser_create('UTF-8');
         xml_set_object($parser, $this);
-        xml_set_element_handler($parser, "startTag", "endTag");
+        xml_set_element_handler($parser, 'startTag', 'endTag');
 
-        $fh = fopen($this->filePath, "r");
+        $fh = fopen($this->filePath, 'r');
         if (empty($fh)) {
             throw new Exception('Can not open file "' . $this->filePath . '"');
         }
@@ -45,6 +45,9 @@ class LargeXmlReader
 
     protected function startTag($parser, $name, $attribs)
     {
+        if ($name == 'OSM' && isset($attribs['VERSION']) && $attribs['VERSION'] != '0.6') {
+            throw new Exception('Unknown version "' . $attribs['VERSION'] . '"');
+        }
         $i = 0;
     }
 
