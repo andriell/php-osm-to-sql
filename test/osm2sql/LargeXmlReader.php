@@ -13,7 +13,7 @@ class LargeXmlReaderTest extends \PHPUnit_Framework_TestCase
 {
     public function test1()
     {
-        $file = __DIR__ . '/../../responses/test.osm';
+        $file = __DIR__ . '/../../resources/test.osm';
         $largeXmlReader = new LargeXmlReader($file);
         $largeXmlReader->parse();
     }
