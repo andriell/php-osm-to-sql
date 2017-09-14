@@ -27,11 +27,18 @@ class LargeXmlReader
     private $bufferSize = 1048576;
     private $encoding = 'UTF-8';
 
-    private $openedTag = [];
-    private $openedTagIndex = -1;
+    private $stack;
 
     /** @var XmlReaderListener */
     private $listener;
+
+    /**
+     * LargeXmlReader constructor.
+     */
+    public function __construct()
+    {
+        $this->stack = new Stack();
+    }
 
     /**
      * @return mixed
@@ -123,17 +130,18 @@ class LargeXmlReader
 
     protected function startTag($parser, $name, $attr)
     {
+        $entity = null;
         if ($name == 'NODE') {
             $entity = new Node($attr);
             $this->listener->node($entity);
         } elseif ($name == 'TAG') {
-            if ($this->getOpenedTag() instanceof Node) {
+            if ($this->stack->top() instanceof Node) {
                 $entity = new NodeTag($this->getParentId(), $attr);
                 $this->listener->nodeTag($entity);
-            } elseif ($this->getOpenedTag() instanceof Way) {
+            } elseif ($this->stack->top() instanceof Way) {
                 $entity = new WayTag($this->getParentId(), $attr);
                 $this->listener->wayTag($entity);
-            } elseif ($this->getOpenedTag() instanceof Relation) {
+            } elseif ($this->stack->top() instanceof Relation) {
                 $entity = new RelationTag($this->getParentId(), $attr);
                 $this->listener->relationTag($entity);
             }
@@ -154,27 +162,17 @@ class LargeXmlReader
             $this->listener->osm($entity);
         } elseif ($name == 'BOUNDS') {
             $entity = new Bounds($attr);
-
             $this->listener->bounds($entity);
+        } else {
+            throw new Exception('Parent not have id');
         }
 
-        $this->openTag($entity);
-    }
-
-    private function openTag($entity)
-    {
-        $this->openedTagIndex++;
-        $this->openedTag[$this->openedTagIndex] = $entity;
-    }
-
-    private function getOpenedTag()
-    {
-        return $this->openedTag[$this->openedTagIndex];
+        $this->stack->push($entity);
     }
 
     private function getParentId()
     {
-        $entity = $this->getOpenedTag();
+        $entity = $this->stack->top();
         if ($entity instanceof EntityHaveId) {
             return $entity->getId();
         }
@@ -183,7 +181,6 @@ class LargeXmlReader
 
     protected function endTag($parser, $name)
     {
-        unset($this->openedTag[$this->openedTagIndex]);
-        $this->openedTagIndex--;
+        $this->stack->pop();
     }
 }
