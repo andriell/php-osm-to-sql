@@ -24,6 +24,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
 {
     private $tables = [];
     private $insertSize = 100;
+    private $insertIgnore = true;
 
     abstract protected function write($table, $str);
 
@@ -56,7 +57,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
             $p1 = ',';
         }
         $this->tables[$table] = [];
-        $sql = 'INSERT INTO `' . $table . '` (' . $sql1 . ') VALUES ' . $sql2 . ';' . "\n";
+        $sql = 'INSERT ' . ($this->insertIgnore ? 'IGNORE' : '') . ' INTO `' . $table . '` (' . $sql1 . ') VALUES ' . $sql2 . ';' . "\n";
         $this->write($table, $sql);
     }
 
@@ -180,5 +181,37 @@ abstract class AbstractReaderListener implements XmlReaderListener
         foreach ($this->tables as $tableName => $null) {
             $this->writeTable($tableName);
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getInsertSize()
+    {
+        return $this->insertSize;
+    }
+
+    /**
+     * @param int $insertSize
+     */
+    public function setInsertSize($insertSize)
+    {
+        $this->insertSize = $insertSize;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInsertIgnore()
+    {
+        return $this->insertIgnore;
+    }
+
+    /**
+     * @param bool $insertIgnore
+     */
+    public function setInsertIgnore($insertIgnore)
+    {
+        $this->insertIgnore = $insertIgnore;
     }
 }

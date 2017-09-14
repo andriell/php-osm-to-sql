@@ -19,10 +19,12 @@ class LargeXmlReaderTest extends \PHPUnit_Framework_TestCase
         $file = __DIR__ . '/../../resources/test.osm';
         $largeXmlReader = new LargeXmlReader();
         $listener = new StrReaderListener();
+        $listener->setInsertSize(3);
+        $listener->setInsertIgnore(true);
         $largeXmlReader->setFilePath($file);
         $largeXmlReader->setListener($listener);
         $largeXmlReader->parse();
         $data = $listener->getData();
-        $this->assertEquals(md5($data), '3757994d5b2f8537c1abbc5cfde07e08');
+        $this->assertEquals(md5($data), 'ea861be1f7236ce763072870383d64ab');
     }
 }
