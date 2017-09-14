@@ -9,7 +9,7 @@
 namespace osm2sql\entity;
 
 
-class Relation
+class Relation implements EntityHaveId
 {
     private $id;
     private $user;

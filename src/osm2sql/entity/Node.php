@@ -9,7 +9,7 @@
 namespace osm2sql\entity;
 
 
-class Node
+class Node implements EntityHaveId
 {
     private $id;
     private $lat;

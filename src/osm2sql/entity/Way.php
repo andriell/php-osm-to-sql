@@ -9,7 +9,7 @@
 namespace osm2sql\entity;
 
 
-class Way
+class Way implements EntityHaveId
 {
     private $id;
     private $user;

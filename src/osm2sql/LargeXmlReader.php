@@ -10,6 +10,7 @@ namespace osm2sql;
 
 
 use osm2sql\entity\Bounds;
+use osm2sql\entity\EntityHaveId;
 use osm2sql\entity\Node;
 use osm2sql\entity\NodeTag;
 use osm2sql\entity\Osm;
@@ -25,9 +26,9 @@ class LargeXmlReader
     private $filePath;
     private $bufferSize = 1048576;
     private $encoding = 'UTF-8';
-    // Last opened tag
-    private $openedTag = '';
-    private $openedTagId = '';
+
+    private $openedTag = [];
+    private $openedTagIndex = -1;
 
     /** @var XmlReaderListener */
     private $listener;
@@ -123,36 +124,66 @@ class LargeXmlReader
     protected function startTag($parser, $name, $attr)
     {
         if ($name == 'NODE') {
-            $this->listener->node(new Node($attr));
+            $entity = new Node($attr);
+            $this->listener->node($entity);
         } elseif ($name == 'TAG') {
-            if ($this->openedTag == 'NODE') {
-                $this->listener->nodeTag(new NodeTag($this->openedTagId, $attr));
-            } elseif ($this->openedTag == 'WAY') {
-                $this->listener->wayTag(new WayTag($this->openedTagId, $attr));
-            } elseif ($this->openedTag == 'RELATION') {
-                $this->listener->relationTag(new RelationTag($this->openedTagId, $attr));
+            if ($this->getOpenedTag() instanceof Node) {
+                $entity = new NodeTag($this->getParentId(), $attr);
+                $this->listener->nodeTag($entity);
+            } elseif ($this->getOpenedTag() instanceof Way) {
+                $entity = new WayTag($this->getParentId(), $attr);
+                $this->listener->wayTag($entity);
+            } elseif ($this->getOpenedTag() instanceof Relation) {
+                $entity = new RelationTag($this->getParentId(), $attr);
+                $this->listener->relationTag($entity);
             }
-        } elseif ($this->openedTag == 'ND') {
-            $this->listener->wayNode(new WayNode($this->openedTagId, $attr));
-        } elseif ($this->openedTag == 'MEMBER') {
-            $this->listener->relationMember(new RelationMember($this->openedTagId, $attr));
+        } elseif ($name == 'ND') {
+            $entity = new WayNode($this->getParentId(), $attr);
+            $this->listener->wayNode($entity);
+        } elseif ($name == 'MEMBER') {
+            $entity = new RelationMember($this->getParentId(), $attr);
+            $this->listener->relationMember($entity);
         } elseif ($name == 'WAY') {
-            $this->listener->way(new Way($attr));
+            $entity = new Way($attr);
+            $this->listener->way($entity);
         } elseif ($name == 'RELATION') {
-            $this->listener->relation(new Relation($attr));
+            $entity = new Relation($attr);
+            $this->listener->relation($entity);
         } elseif ($name == 'OSM') {
-            $this->listener->osm(new Osm($attr));
+            $entity = new Osm($attr);
+            $this->listener->osm($entity);
         } elseif ($name == 'BOUNDS') {
-            $this->listener->bounds(new Bounds($attr));
+            $entity = new Bounds($attr);
+
+            $this->listener->bounds($entity);
         }
 
-        $this->openedTag = $name;
-        $this->openedTagId = isset($attr['ID']) ? $attr['ID'] : '';
+        $this->openTag($entity);
+    }
+
+    private function openTag($entity)
+    {
+        $this->openedTagIndex++;
+        $this->openedTag[$this->openedTagIndex] = $entity;
+    }
+
+    private function getOpenedTag()
+    {
+        return $this->openedTag[$this->openedTagIndex];
+    }
+
+    private function getParentId()
+    {
+        $entity = $this->getOpenedTag();
+        if ($entity instanceof EntityHaveId) {
+            return $entity->getId();
+        }
+        throw new Exception('Parent not have id');
     }
 
     protected function endTag($parser, $name)
     {
-        $this->openedTag = '';
-        $this->openedTagId = '';
+        unset($this->openedTag[$this->openedTagIndex]);
+        $this->openedTagIndex--;
     }
 }

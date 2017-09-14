@@ -9,6 +9,7 @@
 namespace osm2sql;
 
 
+use osm2sql\mysql\FileReaderListener;
 use osm2sql\mysql\StrReaderListener;
 
 class LargeXmlReaderTest extends \PHPUnit_Framework_TestCase
@@ -22,6 +23,6 @@ class LargeXmlReaderTest extends \PHPUnit_Framework_TestCase
         $largeXmlReader->setListener($listener);
         $largeXmlReader->parse();
         $data = $listener->getData();
-        $this->assertEquals(md5($data), '28005a50c229f37e7059834d95ee1c84');
+        $this->assertEquals(md5($data), '500087816100a93772396e324e842473');
     }
 }
