@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ArchiveTar\\": "src/osm2sql"
+            "osm2sql\\": "src/osm2sql"
         }
     }
 }
