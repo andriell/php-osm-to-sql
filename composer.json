@@ -1,6 +1,6 @@
 {
     "name": "andriell/osm2sql",
-    "description": "Export OSM XML in to SQL",
+    "description": "Import OSM XML file in to SQL",
     "type": "library",
     "keywords": [
         "osm",
