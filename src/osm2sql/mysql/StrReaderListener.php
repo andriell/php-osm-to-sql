@@ -21,7 +21,7 @@ class StrReaderListener extends AbstractReaderListener
         return $this->data;
     }
 
-    protected function write($str)
+    protected function write($table, $str)
     {
         $this->data .= $str;
     }

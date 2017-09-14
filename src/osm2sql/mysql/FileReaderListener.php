@@ -14,14 +14,14 @@ class FileReaderListener extends AbstractReaderListener
 
     /**
      * FileReaderListener constructor.
-     * @param $filePath
+     * @param $dirPath
      */
-    public function __construct($filePath)
+    public function __construct($dirPath)
     {
-        $this->file = fopen($filePath, 'w');
+        $this->file = fopen($dirPath, 'w');
     }
 
-    protected function write($str)
+    protected function write($table, $str)
     {
         fwrite($this->file, $str);
     }
@@ -29,6 +29,7 @@ class FileReaderListener extends AbstractReaderListener
 
     public function end()
     {
+        parent::end();
         fclose($this->file);
     }
 }

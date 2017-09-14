@@ -22,34 +22,50 @@ use osm2sql\XmlReaderListener;
 
 abstract class AbstractReaderListener implements XmlReaderListener
 {
-    private $data;
+    private $tables = [];
+    private $insertSize = 100;
 
-    /**
-     * @return mixed
-     */
-    public function getData()
+    abstract protected function write($table, $str);
+
+    protected function writeTable($table)
     {
-        return $this->data;
-    }
+        if (!isset($this->tables[$table])) {
+            return;
+        }
+        if (empty($this->tables[$table])) {
+            return;
+        }
 
-    abstract protected function write($str);
+        $sql1 = '';
+        $sql2 = '';
+        $p1 = '';
+        foreach ($this->tables[$table] as $values) {
+            $sql1 = '';
+            $sql2 .= $p1 . '(';
+            $p2 = '';
+            foreach ($values as $key => $val) {
+                $sql1 .= $p2 . '`' . $key . '`';
+                if ($val === null) {
+                    $sql2 .= $p2 . 'NULL';
+                } else {
+                    $sql2 .= $p2 . '\'' . str_replace('\'', '', $val) . '\'';
+                }
+                $p2 = ',';
+            }
+            $sql2 .= ')';
+            $p1 = ',';
+        }
+        $this->tables[$table] = [];
+        $sql = 'INSERT INTO `' . $table . '` (' . $sql1 . ') VALUES ' . $sql2 . ';' . "\n";
+        $this->write($table, $sql);
+    }
 
     protected function insert($table, $values)
     {
-        $str1 = '';
-        $str2 = '';
-        $prefix = '';
-        foreach ($values as $key => $val) {
-            $str1 .= $prefix . '`' . $key . '`';
-            if ($val === null) {
-                $str2 .= $prefix . 'NULL';
-            } else {
-                $str2 .= $prefix . '\'' . str_replace('\'', '', $val) . '\'';
-            }
-            $prefix = ', ';
+        $this->tables[$table][] = $values;
+        if (count($this->tables[$table]) >= $this->insertSize) {
+            $this->writeTable($table);
         }
-        $sql = 'INSERT INTO `' . $table . '` (' . $str1 . ') VALUES (' . $str2 . ');' . "\n";
-        $this->write($sql);
     }
 
     public function bounds(Bounds $bounds)
@@ -68,6 +84,8 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['visible'] = $node->getVisible() == 'true' ? 1 : 0;
         if ($node->getTimestamp()) {
             $values['timestamp'] = date('Y-m-d H:i:s', strtotime($node->getTimestamp()));
+        } else {
+            $values['timestamp'] = null;
         }
         $values['changeset'] = $node->getChangeSet();
         $this->insert('node', $values);
@@ -97,6 +115,8 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['visible'] = $relation->getVisible() == 'true' ? 1 : 0;
         if ($relation->getTimestamp()) {
             $values['timestamp'] = date('Y-m-d H:i:s', strtotime($relation->getTimestamp()));
+        } else {
+            $values['timestamp'] = null;
         }
         $values['changeset'] = $relation->getChangeSet();
         $this->insert('relation', $values);
@@ -131,6 +151,8 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['visible'] = $way->getVisible() == 'true' ? 1 : 0;
         if ($way->getTimestamp()) {
             $values['timestamp'] = date('Y-m-d H:i:s', strtotime($way->getTimestamp()));
+        } else {
+            $values['timestamp'] = null;
         }
         $values['changeset'] = $way->getChangeSet();
         $this->insert('way', $values);
@@ -155,5 +177,8 @@ abstract class AbstractReaderListener implements XmlReaderListener
 
     public function end()
     {
+        foreach ($this->tables as $tableName => $null) {
+            $this->writeTable($tableName);
+        }
     }
 }
