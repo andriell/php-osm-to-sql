@@ -10,6 +10,7 @@ namespace osm2sql;
 
 
 use osm2sql\entity\Bounds;
+use osm2sql\entity\Node;
 use osm2sql\entity\NodeTag;
 use osm2sql\entity\Osm;
 use osm2sql\entity\Relation;
@@ -27,6 +28,9 @@ class LargeXmlReader
     // Last opened tag
     private $openedTag = '';
     private $openedTagId = '';
+
+    /** @var XmlReaderListener */
+    private $listener;
 
     /**
      * LargeXmlReader constructor.
@@ -63,29 +67,28 @@ class LargeXmlReader
 
     protected function startTag($parser, $name, $attr)
     {
-        $entity = null;
-        if ($name == 'OSM') {
-            $entity = new Osm($attr);
-        } elseif ($name == 'BOUNDS') {
-            $entity = new Bounds($attr);
-        } elseif ($name == 'NODE') {
-            $entity = new Bounds($attr);
-        } elseif ($name == 'WAY') {
-            $entity = new Way($attr);
-        } elseif ($name == 'RELATION') {
-            $entity = new Relation($attr);
+        if ($name == 'NODE') {
+            $this->listener->node(new Node($attr));
         } elseif ($name == 'TAG') {
             if ($this->openedTag == 'NODE') {
-                $entity = new NodeTag($this->openedTagId, $attr);
+                $this->listener->nodeTag(new NodeTag($this->openedTagId, $attr));
             } elseif ($this->openedTag == 'WAY') {
-                $entity = new WayTag($this->openedTagId, $attr);
+                $this->listener->wayTag(new WayTag($this->openedTagId, $attr));
             } elseif ($this->openedTag == 'RELATION') {
-                $entity = new RelationTag($this->openedTagId, $attr);
+                $this->listener->relationTag(new RelationTag($this->openedTagId, $attr));
             }
         } elseif ($this->openedTag == 'ND') {
-            $entity = new WayNode($this->openedTagId, $attr);
+            $this->listener->wayNode(new WayNode($this->openedTagId, $attr));
         } elseif ($this->openedTag == 'MEMBER') {
-            $entity = new RelationMember($this->openedTagId, $attr);
+            $this->listener->relationMember(new RelationMember($this->openedTagId, $attr));
+        } elseif ($name == 'WAY') {
+            $this->listener->way(new Way($attr));
+        } elseif ($name == 'RELATION') {
+            $this->listener->relation(new Relation($attr));
+        } elseif ($name == 'OSM') {
+            $this->listener->osm(new Osm($attr));
+        } elseif ($name == 'BOUNDS') {
+            $this->listener->bounds(new Bounds($attr));
         }
 
         $this->openedTag = $name;
