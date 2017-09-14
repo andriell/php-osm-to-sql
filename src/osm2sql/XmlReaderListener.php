@@ -32,4 +32,5 @@ interface XmlReaderListener
     public function way(Way $way);
     public function wayNode(WayNode $wayNode);
     public function wayTag(WayTag $wayTag);
+    public function end();
 }

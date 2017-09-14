@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS `node` (
   `id` bigint(64) NOT NULL,
   `version` bigint(64) NOT NULL DEFAULT 0,
-  `latitude` double DEFAULT NULL,
-  `longitude` double DEFAULT NULL,
+  `lat` double DEFAULT NULL,
+  `long` double DEFAULT NULL,
   `user` varchar(255) DEFAULT NULL,
   `uid` bigint(64) DEFAULT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT 1,

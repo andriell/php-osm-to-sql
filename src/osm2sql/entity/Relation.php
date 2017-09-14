@@ -104,7 +104,7 @@ class Relation
     /**
      * @return bool
      */
-    public function isVisible()
+    public function getVisible()
     {
         return $this->visible;
     }

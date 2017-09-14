@@ -33,14 +33,68 @@ class LargeXmlReader
     private $listener;
 
     /**
-     * LargeXmlReader constructor.
-     * @param $filePath
+     * @return mixed
      */
-    public function __construct($filePath)
+    public function getFilePath()
+    {
+        return $this->filePath;
+    }
+
+    /**
+     * @param mixed $filePath
+     */
+    public function setFilePath($filePath)
     {
         $this->filePath = $filePath;
     }
 
+    /**
+     * @return int
+     */
+    public function getBufferSize()
+    {
+        return $this->bufferSize;
+    }
+
+    /**
+     * @param int $bufferSize
+     */
+    public function setBufferSize($bufferSize)
+    {
+        $this->bufferSize = $bufferSize;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncoding()
+    {
+        return $this->encoding;
+    }
+
+    /**
+     * @param string $encoding
+     */
+    public function setEncoding($encoding)
+    {
+        $this->encoding = $encoding;
+    }
+
+    /**
+     * @return XmlReaderListener
+     */
+    public function getListener()
+    {
+        return $this->listener;
+    }
+
+    /**
+     * @param XmlReaderListener $listener
+     */
+    public function setListener($listener)
+    {
+        $this->listener = $listener;
+    }
 
     public function parse()
     {
@@ -61,6 +115,7 @@ class LargeXmlReader
             $data = fread($fh, $this->bufferSize);
             xml_parse($parser, $data, $isFinal);
         }
+        $this->listener->end();
 
         fclose($fh);
     }
