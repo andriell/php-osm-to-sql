@@ -11,10 +11,10 @@ namespace osm2sql\entity;
 
 class Bounds
 {
-    private $minLat;
-    private $minLon;
-    private $maxLat;
-    private $maxLon;
+    private $minLat = null;
+    private $minLon = null;
+    private $maxLat = null;
+    private $maxLon = null;
 
     /**
      * @param array $array

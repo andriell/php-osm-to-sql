@@ -11,13 +11,13 @@ namespace osm2sql\entity;
 
 class Relation implements EntityHaveId
 {
-    private $id;
-    private $user;
-    private $uid;
-    private $visible;
-    private $version;
-    private $changeSet;
-    private $timestamp;
+    private $id = null;
+    private $user = null;
+    private $uid = null;
+    private $visible = null;
+    private $version = null;
+    private $changeSet = null;
+    private $timestamp = null;
 
     /**
      * @param array $array

@@ -11,15 +11,15 @@ namespace osm2sql\entity;
 
 class Node implements EntityHaveId
 {
-    private $id;
-    private $lat;
-    private $lon;
-    private $user;
-    private $uid;
-    private $visible;
-    private $version;
-    private $changeSet;
-    private $timestamp;
+    private $id = null;
+    private $lat = null;
+    private $lon = null;
+    private $user = null;
+    private $uid = null;
+    private $visible = null;
+    private $version = null;
+    private $changeSet = null;
+    private $timestamp = null;
 
     /**
      * @param array $array

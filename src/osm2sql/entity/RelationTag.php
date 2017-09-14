@@ -11,9 +11,9 @@ namespace osm2sql\entity;
 
 class RelationTag
 {
-    private $parentId;
-    private $k;
-    private $v;
+    private $parentId = null;
+    private $k = null;
+    private $v = null;
 
     /**
      * @param $parentId

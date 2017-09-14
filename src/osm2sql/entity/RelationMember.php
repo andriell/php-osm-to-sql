@@ -11,10 +11,10 @@ namespace osm2sql\entity;
 
 class RelationMember
 {
-    private $parentId;
-    private $type;
-    private $ref;
-    private $role;
+    private $parentId = null;
+    private $type = null;
+    private $ref = null;
+    private $role = null;
 
     /**
      * @param $parentId

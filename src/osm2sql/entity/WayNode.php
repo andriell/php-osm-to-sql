@@ -11,8 +11,8 @@ namespace osm2sql\entity;
 
 class WayNode
 {
-    private $parentId;
-    private $ref;
+    private $parentId = null;
+    private $ref = null;
 
     /**
      * @param $parentId

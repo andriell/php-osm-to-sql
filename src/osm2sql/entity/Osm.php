@@ -11,8 +11,8 @@ namespace osm2sql\entity;
 
 class Osm
 {
-    private $version;
-    private $generator;
+    private $version = null;
+    private $generator = null;
 
     /**
      * @param array $array
