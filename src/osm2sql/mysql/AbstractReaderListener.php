@@ -65,7 +65,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['long'] = $node->getLon();
         $values['user'] = $node->getUser();
         $values['uid'] = $node->getUid();
-        $values['visible'] = $node->getVisible() ? 1 : 0;
+        $values['visible'] = $node->getVisible() == 'true' ? 1 : 0;
         $values['timestamp'] = date('Y-m-d H:i:s', strtotime($node->getTimestamp()));
         $values['changeset'] = $node->getChangeSet();
         $this->insert('node', $values);
@@ -92,7 +92,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['version'] = $relation->getVersion();
         $values['user'] = $relation->getUser();
         $values['uid'] = $relation->getUid();
-        $values['visible'] = $relation->getVisible() ? 1 : 0;
+        $values['visible'] = $relation->getVisible() == 'true' ? 1 : 0;
         $values['timestamp'] = date('Y-m-d H:i:s', strtotime($relation->getTimestamp()));
         $values['changeset'] = $relation->getChangeSet();
         $this->insert('relation', $values);
@@ -124,7 +124,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['version'] = $way->getVersion();
         $values['user'] = $way->getUser();
         $values['uid'] = $way->getUid();
-        $values['visible'] = $way->getVisible() ? 1 : 0;
+        $values['visible'] = $way->getVisible() == 'true' ? 1 : 0;
         $values['timestamp'] = date('Y-m-d H:i:s', strtotime($way->getTimestamp()));
         $values['changeset'] = $way->getChangeSet();
         $this->insert('way', $values);

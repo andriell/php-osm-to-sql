@@ -23,6 +23,6 @@ class LargeXmlReaderTest extends \PHPUnit_Framework_TestCase
         $largeXmlReader->setListener($listener);
         $largeXmlReader->parse();
         $data = $listener->getData();
-        $this->assertEquals(md5($data), '742b3f998aa5bed77453b31bf0f3a6f1');
+        $this->assertEquals(md5($data), '02781577c99179c33a13f7d830b725a7');
     }
 }
