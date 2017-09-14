@@ -13,6 +13,9 @@ class LargeXmlReader
 {
     private $filePath;
     private $bufferSize = 1048576;
+    private $encoding = 'UTF-8';
+    // Last opened tag
+    private $openedTag = '';
 
     /**
      * LargeXmlReader constructor.
@@ -26,7 +29,11 @@ class LargeXmlReader
 
     public function parse()
     {
-        $parser = xml_parser_create('UTF-8');
+        $parser = xml_parser_create($this->encoding);
+        xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 1);
+        xml_parser_set_option($parser, XML_OPTION_SKIP_TAGSTART, 0);
+        xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 0);
+        xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $this->encoding);
         xml_set_object($parser, $this);
         xml_set_element_handler($parser, 'startTag', 'endTag');
 
@@ -43,10 +50,11 @@ class LargeXmlReader
         fclose($fh);
     }
 
-    protected function startTag($parser, $name, $attribs)
+    protected function startTag($parser, $name, $attr)
     {
-        if ($name == 'OSM' && isset($attribs['VERSION']) && $attribs['VERSION'] != '0.6') {
-            throw new Exception('Unknown version "' . $attribs['VERSION'] . '"');
+        $this->openedTag = $name;
+        if ($name == 'OSM' && isset($attr['VERSION']) && $attr['VERSION'] != '0.6') {
+            throw new Exception('Unknown version "' . $attr['VERSION'] . '"');
         }
         $i = 0;
     }
