@@ -9,6 +9,16 @@
 namespace osm2sql;
 
 
+use osm2sql\entity\Bounds;
+use osm2sql\entity\NodeTag;
+use osm2sql\entity\Osm;
+use osm2sql\entity\Relation;
+use osm2sql\entity\RelationMember;
+use osm2sql\entity\RelationTag;
+use osm2sql\entity\Way;
+use osm2sql\entity\WayNode;
+use osm2sql\entity\WayTag;
+
 class LargeXmlReader
 {
     private $filePath;
@@ -16,6 +26,7 @@ class LargeXmlReader
     private $encoding = 'UTF-8';
     // Last opened tag
     private $openedTag = '';
+    private $openedTagId = '';
 
     /**
      * LargeXmlReader constructor.
@@ -52,15 +63,38 @@ class LargeXmlReader
 
     protected function startTag($parser, $name, $attr)
     {
-        $this->openedTag = $name;
-        if ($name == 'OSM' && isset($attr['VERSION']) && $attr['VERSION'] != '0.6') {
-            throw new Exception('Unknown version "' . $attr['VERSION'] . '"');
+        $entity = null;
+        if ($name == 'OSM') {
+            $entity = new Osm($attr);
+        } elseif ($name == 'BOUNDS') {
+            $entity = new Bounds($attr);
+        } elseif ($name == 'NODE') {
+            $entity = new Bounds($attr);
+        } elseif ($name == 'WAY') {
+            $entity = new Way($attr);
+        } elseif ($name == 'RELATION') {
+            $entity = new Relation($attr);
+        } elseif ($name == 'TAG') {
+            if ($this->openedTag == 'NODE') {
+                $entity = new NodeTag($this->openedTagId, $attr);
+            } elseif ($this->openedTag == 'WAY') {
+                $entity = new WayTag($this->openedTagId, $attr);
+            } elseif ($this->openedTag == 'RELATION') {
+                $entity = new RelationTag($this->openedTagId, $attr);
+            }
+        } elseif ($this->openedTag == 'ND') {
+            $entity = new WayNode($this->openedTagId, $attr);
+        } elseif ($this->openedTag == 'MEMBER') {
+            $entity = new RelationMember($this->openedTagId, $attr);
         }
-        $i = 0;
+
+        $this->openedTag = $name;
+        $this->openedTagId = isset($attr['ID']) ? $attr['ID'] : '';
     }
 
     protected function endTag($parser, $name)
     {
-        $i = 0;
+        $this->openedTag = '';
+        $this->openedTagId = '';
     }
 }
