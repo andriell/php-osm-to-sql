@@ -9,11 +9,10 @@
 namespace osm2sql\entity;
 
 
-class NodeTag
+class WayNode
 {
     private $parentId;
-    private $k;
-    private $v;
+    private $ref;
 
     /**
      * @param $parentId
@@ -22,11 +21,8 @@ class NodeTag
     public function __construct($parentId, $array)
     {
         $this->parentId = $parentId;
-        if (isset($array['K'])) {
-            $this->k = $array['K'];
-        }
-        if (isset($array['V'])) {
-            $this->v = $array['V'];
+        if (isset($array['REF'])) {
+            $this->ref = $array['REF'];
         }
     }
 
@@ -49,32 +45,16 @@ class NodeTag
     /**
      * @return mixed
      */
-    public function getK()
+    public function getRef()
     {
-        return $this->k;
+        return $this->ref;
     }
 
     /**
-     * @param mixed $k
+     * @param mixed $ref
      */
-    public function setK($k)
+    public function setRef($ref)
     {
-        $this->k = $k;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getV()
-    {
-        return $this->v;
-    }
-
-    /**
-     * @param mixed $v
-     */
-    public function setV($v)
-    {
-        $this->v = $v;
+        $this->ref = $ref;
     }
 }

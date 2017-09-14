@@ -3,17 +3,15 @@
  * Created by PhpStorm.
  * User: am_ry
  * Date: 14.09.2017
- * Time: 12:09
+ * Time: 12:20
  */
 
 namespace osm2sql\entity;
 
 
-class Node
+class Way
 {
     private $id;
-    private $lat;
-    private $lon;
     private $user;
     private $uid;
     private $visible;
@@ -74,38 +72,6 @@ class Node
     /**
      * @return mixed
      */
-    public function getLat()
-    {
-        return $this->lat;
-    }
-
-    /**
-     * @param mixed $lat
-     */
-    public function setLat($lat)
-    {
-        $this->lat = $lat;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLon()
-    {
-        return $this->lon;
-    }
-
-    /**
-     * @param mixed $lon
-     */
-    public function setLon($lon)
-    {
-        $this->lon = $lon;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getUser()
     {
         return $this->user;
@@ -136,15 +102,15 @@ class Node
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getVisible()
+    public function isVisible()
     {
         return $this->visible;
     }
 
     /**
-     * @param boolean $visible
+     * @param bool $visible
      */
     public function setVisible($visible)
     {
@@ -152,7 +118,7 @@ class Node
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getVersion()
     {

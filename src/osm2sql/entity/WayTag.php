@@ -9,7 +9,7 @@
 namespace osm2sql\entity;
 
 
-class NodeTag
+class WayTag
 {
     private $parentId;
     private $k;

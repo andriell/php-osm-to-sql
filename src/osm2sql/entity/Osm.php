@@ -15,7 +15,6 @@ class Osm
     private $generator;
 
     /**
-     * Osm constructor.
      * @param array $array
      */
     public function __construct($array)

@@ -17,7 +17,6 @@ class Bounds
     private $maxLon;
 
     /**
-     * Osm constructor.
      * @param array $array
      */
     public function __construct($array)
