@@ -32,6 +32,8 @@ class LargeXmlReader
 
     /** @var XmlReaderListener */
     private $listener;
+    /** @var callable */
+    private $progressListener;
 
     /**
      * LargeXmlReader constructor.
@@ -119,12 +121,20 @@ class LargeXmlReader
         if (empty($fh)) {
             throw new Exception('Can not open file "' . $this->filePath . '"');
         }
-
+        $totalSize = filesize($this->filePath);
+        $readSize = 0;
         while (!($isFinal = feof($fh))) {
+            if (is_callable($this->progressListener)) {
+                call_user_func($this->progressListener, $readSize, $totalSize);
+            }
             $data = fread($fh, $this->bufferSize);
             xml_parse($parser, $data, $isFinal);
+            $readSize += $this->bufferSize;
         }
         $this->listener->end();
+        if (is_callable($this->progressListener)) {
+            call_user_func($this->progressListener, $totalSize, $totalSize);
+        }
 
         fclose($fh);
     }
@@ -194,5 +204,21 @@ class LargeXmlReader
     protected function endTag($parser, $name)
     {
         $this->stack->pop();
+    }
+
+    /**
+     * @return callable
+     */
+    public function getProgressListener()
+    {
+        return $this->progressListener;
+    }
+
+    /**
+     * @param callable $progressListener
+     */
+    public function setProgressListener($progressListener)
+    {
+        $this->progressListener = $progressListener;
     }
 }

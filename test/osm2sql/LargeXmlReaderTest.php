@@ -16,15 +16,25 @@ class LargeXmlReaderTest extends \PHPUnit_Framework_TestCase
 {
     public function test1()
     {
-        $file = __DIR__ . '/../../resources/test.osm';
+        $fileOsm = __DIR__ . '/../../resources/test.osm';
+        $fileSql = __DIR__ . '/../../resources/test.sql';
         $largeXmlReader = new LargeXmlReader();
         $listener = new StrReaderListener();
         $listener->setInsertSize(3);
         $listener->setInsertIgnore(true);
-        $largeXmlReader->setFilePath($file);
+        $largeXmlReader->setFilePath($fileOsm);
         $largeXmlReader->setListener($listener);
+        $largeXmlReader->setBufferSize(1000);
+        $progress = '';
+        $largeXmlReader->setProgressListener(function($readSize, $totalSize) use (&$progress) {
+            $progress .= $readSize . '/' . $totalSize . "\n";
+        });
+
         $largeXmlReader->parse();
         $data = $listener->getData();
-        $this->assertEquals(md5($data), '3c1d014d8bce3847772a31722fca526f');
+        $this->assertEquals($data, file_get_contents($fileSql), 'SQL generation');
+
+        $progressActual = "0/1743\n1000/1743\n1743/1743\n";
+        $this->assertEquals($progress, $progressActual, 'Progress listener');
     }
 }

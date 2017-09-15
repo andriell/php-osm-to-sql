@@ -15,6 +15,9 @@ Convert OSM to SQL file
         $listener->setInsertSize(500);
         $listener->setInsertIgnore(true);
         $largeXmlReader->setListener($listener);
+        $largeXmlReader->setProgressListener(function($readSize, $totalSize) use ($progress) {
+            echo $readSize . '/' . $totalSize . " b\n";
+        });
         $largeXmlReader->parse();
 
 3. Import sql file in to database
