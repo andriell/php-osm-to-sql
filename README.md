@@ -16,7 +16,7 @@ Convert OSM to SQL file
         $listener->setInsertIgnore(true);
         $largeXmlReader->setListener($listener);
         $largeXmlReader->setProgressListener(function($readSize, $totalSize) use ($progress) {
-            echo $readSize . '/' . $totalSize . " b\n";
+            echo 'Completed: ' . $readSize . ' / ' . $totalSize . " b\n";
         });
         $largeXmlReader->parse();
 
