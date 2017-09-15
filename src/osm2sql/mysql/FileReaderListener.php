@@ -23,7 +23,7 @@ class FileReaderListener extends AbstractReaderListener
 
     protected function write($table, $str)
     {
-        fwrite($this->file, $str);
+        fwrite($this->file, $str . ";\n");
     }
 
 

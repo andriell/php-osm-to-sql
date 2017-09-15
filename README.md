@@ -25,3 +25,19 @@ Convert OSM to SQL file
 
         mysql -u username -p database_name < /path/to/new/sql/file.sql
 
+### Example 2
+You can create your ReaderListener and write data directly to the database
+
+    class DbReaderListener extends AbstractReaderListener
+    {
+        // ...
+    
+        protected function write($table, $sql)
+        {
+            $this->myDbConnection->query($sql);
+        }
+    }
+    
+    // ...
+    $largeXmlReader->setListener(new DbReaderListener());
+    // ...

@@ -23,6 +23,6 @@ class StrReaderListener extends AbstractReaderListener
 
     protected function write($table, $str)
     {
-        $this->data .= $str;
+        $this->data .= $str . ";\n";
     }
 }

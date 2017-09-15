@@ -57,7 +57,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
             $p1 = ',';
         }
         $this->tables[$table] = [];
-        $sql = 'INSERT ' . ($this->insertIgnore ? 'IGNORE' : '') . ' INTO `' . $table . '` (' . $sql1 . ') VALUES ' . $sql2 . ';' . "\n";
+        $sql = 'INSERT ' . ($this->insertIgnore ? 'IGNORE' : '') . ' INTO `' . $table . '` (' . $sql1 . ') VALUES ' . $sql2;
         $this->write($table, $sql);
     }
 
