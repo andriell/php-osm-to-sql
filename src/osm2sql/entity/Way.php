@@ -168,6 +168,6 @@ class Way implements EntityHaveId, EntityHaveNode
 
     public function nextSort()
     {
-        $this->sort++;
+        return $this->sort++;
     }
 }
