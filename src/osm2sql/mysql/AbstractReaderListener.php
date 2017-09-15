@@ -130,6 +130,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['type'] = $relationMember->getType();
         $values['ref'] = $relationMember->getRef();
         $values['role'] = $relationMember->getRole();
+        $values['sort'] = $relationMember->getSort();
         $this->insert('relation_member', $values);
     }
 
@@ -164,6 +165,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values = [];
         $values['way_id'] = $wayNode->getParentId();
         $values['node_id'] = $wayNode->getRef();
+        $values['sort'] = $wayNode->getSort();
         $this->insert('way_node', $values);
     }
 

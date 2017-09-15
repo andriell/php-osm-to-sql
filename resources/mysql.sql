@@ -36,9 +36,11 @@ CREATE TABLE IF NOT EXISTS `relation_member` (
   `type` enum('node','way','relation') DEFAULT 'node',
   `ref` bigint(64) DEFAULT NULL,
   `role` varchar(255) DEFAULT NULL,
+  `sort` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `relation_id` (`relation_id`),
-  KEY `ref` (`ref`)
+  KEY `ref` (`ref`),
+  KEY `sort` (`sort`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `relation_tag` (
@@ -63,8 +65,10 @@ CREATE TABLE IF NOT EXISTS `way` (
 CREATE TABLE IF NOT EXISTS `way_node` (
   `way_id` bigint(64) NOT NULL,
   `node_id` bigint(64) NOT NULL,
+  `sort` INT(11) NOT NULL,
   PRIMARY KEY (`way_id`,`node_id`),
-  KEY `node_id` (`node_id`)
+  KEY `node_id` (`node_id`),
+  KEY `sort` (`sort`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `way_tag` (

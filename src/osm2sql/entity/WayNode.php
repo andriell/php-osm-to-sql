@@ -13,6 +13,7 @@ class WayNode
 {
     private $parentId = null;
     private $ref = null;
+    private $sort = null;
 
     /**
      * @param $parentId
@@ -23,6 +24,9 @@ class WayNode
         $this->parentId = $parentId;
         if (isset($array['REF'])) {
             $this->ref = $array['REF'];
+        }
+        if (isset($array['SORT'])) {
+            $this->sort = $array['SORT'];
         }
     }
 
@@ -56,5 +60,21 @@ class WayNode
     public function setRef($ref)
     {
         $this->ref = $ref;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
+
+    /**
+     * @param mixed|null $sort
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
     }
 }

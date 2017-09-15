@@ -15,6 +15,7 @@ class RelationMember
     private $type = null;
     private $ref = null;
     private $role = null;
+    private $sort = null;
 
     /**
      * @param $parentId
@@ -31,6 +32,9 @@ class RelationMember
         }
         if (isset($array['ROLE'])) {
             $this->role = $array['ROLE'];
+        }
+        if (isset($array['SORT'])) {
+            $this->sort = $array['SORT'];
         }
     }
 
@@ -96,5 +100,21 @@ class RelationMember
     public function setRole($role)
     {
         $this->role = $role;
+    }
+
+    /**
+     * @return null
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
+
+    /**
+     * @param null $sort
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
     }
 }
