@@ -9,8 +9,9 @@ Convert OSM to SQL file
 
 2. Convert OSM to SQL inserts
 
+        ini_set('memory_limit', '10M');
         $largeXmlReader = new LargeXmlReader();
-        $largeXmlReader->setFilePath('/path/to/osm/xml/file.osm');
+        $largeXmlReader->setFilePath('/path/to/very/big/osm/xml/file.osm');
         $listener = new FileReaderListener('/path/to/new/sql/file.sql');
         $listener->setInsertSize(500);
         $listener->setInsertIgnore(true);

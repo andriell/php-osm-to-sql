@@ -16,6 +16,8 @@ class LargeXmlReaderTest extends \PHPUnit_Framework_TestCase
 {
     public function test1()
     {
+        ini_set('memory_limit', '10M');
+
         $fileOsm = __DIR__ . '/../../resources/test.osm';
         $fileSql = __DIR__ . '/../../resources/test.sql';
         $largeXmlReader = new LargeXmlReader();
