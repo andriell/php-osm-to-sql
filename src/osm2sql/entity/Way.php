@@ -9,7 +9,7 @@
 namespace osm2sql\entity;
 
 
-class Way implements EntityHaveId
+class Way implements EntityHaveId, EntityHaveNode
 {
     private $id = null;
     private $user = null;
@@ -18,6 +18,7 @@ class Way implements EntityHaveId
     private $version = null;
     private $changeSet = null;
     private $timestamp = null;
+    private $sort = 0;
 
     /**
      * @param array $array
@@ -163,5 +164,10 @@ class Way implements EntityHaveId
     public function setTimestamp($timestamp)
     {
         $this->timestamp = $timestamp;
+    }
+
+    public function nextSort()
+    {
+        $this->sort++;
     }
 }

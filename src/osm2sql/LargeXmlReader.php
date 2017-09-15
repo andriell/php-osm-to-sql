@@ -11,6 +11,7 @@ namespace osm2sql;
 
 use osm2sql\entity\Bounds;
 use osm2sql\entity\EntityHaveId;
+use osm2sql\entity\EntityHaveNode;
 use osm2sql\entity\Node;
 use osm2sql\entity\NodeTag;
 use osm2sql\entity\Osm;
@@ -147,9 +148,11 @@ class LargeXmlReader
             }
         } elseif ($name == 'ND') {
             $entity = new WayNode($this->getParentId(), $attr);
+            $entity->setSort($this->nextSort());
             $this->listener->wayNode($entity);
         } elseif ($name == 'MEMBER') {
             $entity = new RelationMember($this->getParentId(), $attr);
+            $entity->setSort($this->nextSort());
             $this->listener->relationMember($entity);
         } elseif ($name == 'WAY') {
             $entity = new Way($attr);
@@ -177,6 +180,15 @@ class LargeXmlReader
             return $entity->getId();
         }
         throw new Exception('Parent not have id');
+    }
+
+    private function nextSort()
+    {
+        $entity = $this->stack->top();
+        if ($entity instanceof EntityHaveNode) {
+            return $entity->nextSort();
+        }
+        throw new Exception('Parent not have nextSort');
     }
 
     protected function endTag($parser, $name)
