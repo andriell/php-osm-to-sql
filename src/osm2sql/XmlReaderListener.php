@@ -13,6 +13,7 @@ use osm2sql\entity\Bounds;
 use osm2sql\entity\Node;
 use osm2sql\entity\NodeTag;
 use osm2sql\entity\Osm;
+use osm2sql\entity\Other;
 use osm2sql\entity\Relation;
 use osm2sql\entity\RelationMember;
 use osm2sql\entity\RelationTag;
@@ -32,5 +33,6 @@ interface XmlReaderListener
     public function way(Way $way);
     public function wayNode(WayNode $wayNode);
     public function wayTag(WayTag $wayTag);
+    public function other(Other $other);
     public function end();
 }

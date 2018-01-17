@@ -12,6 +12,7 @@ use osm2sql\entity\Bounds;
 use osm2sql\entity\Node;
 use osm2sql\entity\NodeTag;
 use osm2sql\entity\Osm;
+use osm2sql\entity\Other;
 use osm2sql\entity\Relation;
 use osm2sql\entity\RelationMember;
 use osm2sql\entity\RelationTag;
@@ -89,7 +90,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
             $values['timestamp'] = null;
         }
         $values['changeset'] = $node->getChangeSet();
-        $this->insert('node', $values);
+        $this->insert('osm_node', $values);
 
     }
 
@@ -99,7 +100,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['node_id'] = $nodeTag->getParentId();
         $values['k'] = $nodeTag->getK();
         $values['v'] = $nodeTag->getV();
-        $this->insert('node_tag', $values);
+        $this->insert('osm_node_tag', $values);
     }
 
     public function osm(Osm $osm)
@@ -120,7 +121,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
             $values['timestamp'] = null;
         }
         $values['changeset'] = $relation->getChangeSet();
-        $this->insert('relation', $values);
+        $this->insert('osm_relation', $values);
     }
 
     public function relationMember(RelationMember $relationMember)
@@ -131,7 +132,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['ref'] = $relationMember->getRef();
         $values['role'] = $relationMember->getRole();
         $values['sort'] = $relationMember->getSort();
-        $this->insert('relation_member', $values);
+        $this->insert('osm_relation_member', $values);
     }
 
     public function relationTag(RelationTag $relationTag)
@@ -140,7 +141,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['relation_id'] = $relationTag->getParentId();
         $values['k'] = $relationTag->getK();
         $values['v'] = $relationTag->getV();
-        $this->insert('relation_tag', $values);
+        $this->insert('osm_relation_tag', $values);
     }
 
     public function way(Way $way)
@@ -157,7 +158,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
             $values['timestamp'] = null;
         }
         $values['changeset'] = $way->getChangeSet();
-        $this->insert('way', $values);
+        $this->insert('osm_way', $values);
     }
 
     public function wayNode(WayNode $wayNode)
@@ -166,7 +167,7 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['way_id'] = $wayNode->getParentId();
         $values['node_id'] = $wayNode->getRef();
         $values['sort'] = $wayNode->getSort();
-        $this->insert('way_node', $values);
+        $this->insert('osm_way_node', $values);
     }
 
     public function wayTag(WayTag $wayTag)
@@ -175,7 +176,11 @@ abstract class AbstractReaderListener implements XmlReaderListener
         $values['way_id'] = $wayTag->getParentId();
         $values['k'] = $wayTag->getK();
         $values['v'] = $wayTag->getV();
-        $this->insert('way_tag', $values);
+        $this->insert('osm_way_tag', $values);
+    }
+
+    public function other(Other $other)
+    {
     }
 
     public function end()

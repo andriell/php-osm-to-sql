@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `node` (
+CREATE TABLE IF NOT EXISTS `osm_node` (
   `id` bigint(64) NOT NULL,
   `version` bigint(64) NOT NULL DEFAULT 0,
   `lat` double DEFAULT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `node` (
   PRIMARY KEY (`id`,`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `node_tag` (
+CREATE TABLE IF NOT EXISTS `osm_node_tag` (
   `node_id` bigint(64) NOT NULL,
   `k` varchar(255) NOT NULL,
   `v` varchar(255) DEFAULT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `node_tag` (
   KEY `k` (`k`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `relation` (
+CREATE TABLE IF NOT EXISTS `osm_relation` (
   `id` bigint(64) NOT NULL,
   `version` bigint(64) NOT NULL DEFAULT 0,
   `user` varchar(255) DEFAULT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `relation` (
   PRIMARY KEY (`id`,`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `relation_member` (
+CREATE TABLE IF NOT EXISTS `osm_relation_member` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `relation_id` bigint(64) NOT NULL,
   `type` enum('node','way','relation') DEFAULT 'node',
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `relation_member` (
   KEY `sort` (`sort`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `relation_tag` (
+CREATE TABLE IF NOT EXISTS `osm_relation_tag` (
   `relation_id` bigint(64) NOT NULL,
   `k` varchar(255) NOT NULL,
   `v` varchar(255) DEFAULT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `relation_tag` (
   KEY `k` (`k`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `way` (
+CREATE TABLE IF NOT EXISTS `osm_way` (
   `id` bigint(64) NOT NULL,
   `version` bigint(64) NOT NULL DEFAULT 0,
   `visible` tinyint(1) NOT NULL DEFAULT 1,
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `way` (
   PRIMARY KEY (`id`,`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `way_node` (
+CREATE TABLE IF NOT EXISTS `osm_way_node` (
   `way_id` bigint(64) NOT NULL,
   `node_id` bigint(64) NOT NULL,
   `sort` INT(11) NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `way_node` (
   KEY `sort` (`sort`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `way_tag` (
+CREATE TABLE IF NOT EXISTS `osm_way_tag` (
   `way_id` bigint(64) NOT NULL,
   `k` varchar(255) NOT NULL,
   `v` varchar(255) DEFAULT NULL,

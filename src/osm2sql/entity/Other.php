@@ -9,7 +9,7 @@
 namespace osm2sql\entity;
 
 
-class Entity
+class Other
 {
     private $name = '';
     private $attr = [];

@@ -10,7 +10,7 @@ namespace osm2sql;
 
 
 use osm2sql\entity\Bounds;
-use osm2sql\entity\Entity;
+use osm2sql\entity\Other;
 use osm2sql\entity\EntityHaveId;
 use osm2sql\entity\EntityHaveNode;
 use osm2sql\entity\Node;
@@ -178,7 +178,8 @@ class LargeXmlReader
             $entity = new Bounds($attr);
             $this->listener->bounds($entity);
         } else {
-            $entity = new Entity($name, $attr);
+            $entity = new Other($name, $attr);
+            $this->listener->other($entity);
         }
 
         $this->stack->push($entity);
