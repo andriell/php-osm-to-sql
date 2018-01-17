@@ -10,6 +10,7 @@ namespace osm2sql;
 
 
 use osm2sql\entity\Bounds;
+use osm2sql\entity\Entity;
 use osm2sql\entity\EntityHaveId;
 use osm2sql\entity\EntityHaveNode;
 use osm2sql\entity\Node;
@@ -177,7 +178,7 @@ class LargeXmlReader
             $entity = new Bounds($attr);
             $this->listener->bounds($entity);
         } else {
-            throw new Exception('Parent not have id');
+            $entity = new Entity($name, $attr);
         }
 
         $this->stack->push($entity);
