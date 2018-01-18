@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `osm_relation` (
 CREATE TABLE IF NOT EXISTS `osm_relation_member` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `relation_id` bigint(64) NOT NULL,
-  `type` enum('node','way','relation') DEFAULT 'node',
+  `type` varchar(50) NOT NULL,
   `ref` bigint(64) DEFAULT NULL,
   `role` varchar(255) DEFAULT NULL,
   `sort` INT(11) NOT NULL,
@@ -77,4 +77,44 @@ CREATE TABLE IF NOT EXISTS `osm_way_tag` (
   `v` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`way_id`,`k`),
   KEY `k` (`k`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `osm_building` (
+  `way_id` BIGINT(64) NOT NULL,
+  `type` VARCHAR(255) NOT NULL,
+  `street` VARCHAR(255) NULL DEFAULT NULL,
+  `housenumber` VARCHAR(255) NULL DEFAULT NULL,
+  `m` MULTIPOLYGON NOT NULL,
+  PRIMARY KEY (`way_id`),
+  INDEX `type` (`type`),
+  INDEX `street` (`street`),
+  INDEX `housenumber` (`housenumber`),
+  SPATIAL INDEX `m` (`m`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `osm_highway` (
+  `way_id` BIGINT(64) NOT NULL,
+  `type` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NULL DEFAULT NULL,
+  `ref` VARCHAR(255) NULL DEFAULT NULL,
+  `l` MULTILINESTRING NOT NULL,
+  PRIMARY KEY (`way_id`),
+  SPATIAL INDEX `g` (`l`),
+  INDEX `name` (`name`),
+  INDEX `ref` (`ref`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `osm_place` (
+  `relation_id` BIGINT(64) NOT NULL,
+  `type` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NULL DEFAULT NULL,
+  `old_name` VARCHAR(255) NULL DEFAULT NULL,
+  `outer` MULTIPOLYGON NOT NULL,
+  `inner` MULTIPOLYGON NOT NULL,
+  PRIMARY KEY (`relation_id`),
+  INDEX `type` (`type`),
+  INDEX `name` (`name`),
+  INDEX `old_name` (`old_name`),
+  SPATIAL INDEX `outer` (`outer`),
+  SPATIAL INDEX `inner` (`inner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

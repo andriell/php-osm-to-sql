@@ -166,9 +166,9 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
                         $points = $this->getWayPoints($member['ref']);
                         if ($points) {
                             if ($member['role'] == 'outer') {
-                                $outer[] = $points;
+                                $outer[] = [$points];
                             } elseif ($member['role'] == 'inner') {
-                                $inner[] = $points;
+                                $inner[] = [$points];
                             }
                         }
                     }
