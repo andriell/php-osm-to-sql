@@ -9,10 +9,10 @@
 namespace osm2sql\mysql;
 
 
-class GeomMultiPolygon extends GeomJson
+class GeomMultiLineString extends GeomJson
 {
     public function __construct(array $data)
     {
-        parent::__construct(['type' => 'MultiPolygon', 'coordinates' => $data]);
+        parent::__construct(['type' => 'MultiLineString', 'coordinates' => $data]);
     }
 }

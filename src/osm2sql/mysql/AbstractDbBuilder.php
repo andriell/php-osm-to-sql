@@ -23,7 +23,7 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
 
     public function deleteBuilding()
     {
-        $this->queryUpdate('DELETE FROM `osm_building`;');
+        $this->queryUpdate('DELETE FROM `osm_building`');
     }
 
     public function insertBuilding($step = 1000, $offset = 0)
@@ -39,7 +39,6 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
             $sql = '
                 SELECT
                     wt1.way_id,
-                    wt1.k,
                     wt1.v,
                     (SELECT wt2.v FROM osm_way_tag wt2 WHERE wt2.way_id = wt1.way_id AND wt2.k = \'addr:street\') street,
                     (SELECT wt2.v FROM osm_way_tag wt2 WHERE wt2.way_id = wt1.way_id AND wt2.k = \'addr:housenumber\') housenumber,
@@ -68,7 +67,7 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
                     'type' => $row['v'],
                     'street' => $row['street'],
                     'housenumber' => $row['housenumber'],
-                    'm' => new GeomMultiPolygon([$points]),
+                    'm' => new GeomMultiPolygon([[$points]]),
                 ]);
                 if (is_callable($this->progressListener)) {
                     call_user_func($this->progressListener, ++$doSize, $totalSize);
@@ -77,6 +76,57 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
             $offset += $step;
         }
     }
+
+    public function deleteHighway()
+    {
+        $this->queryUpdate('DELETE FROM `osm_highway`');
+    }
+
+    public function insertHighway($step = 1000, $offset = 0)
+    {
+        $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'building\', \'building:use\')';
+        $rows = $this->querySelect($sql);
+        $totalSize = (int) array_shift($rows)['c'];
+        if (is_callable($this->progressListener)) {
+            call_user_func($this->progressListener, 0, $totalSize);
+        }
+        $doSize = 0;
+        while ($offset < $totalSize) {
+            $sql = '
+                SELECT
+                    wt1.way_id,
+                    wt1.v,
+                    (SELECT wt2.v FROM osm_way_tag wt2 WHERE wt2.way_id = wt1.way_id AND wt2.k = \'name\') `name`,
+                    (SELECT wt2.v FROM osm_way_tag wt2 WHERE wt2.way_id = wt1.way_id AND wt2.k = \'ref\') ref,
+                    (SELECT GROUP_CONCAT(CONCAT(\'[\', n.lat, \',\', n.long, \']\') ORDER BY wn.sort SEPARATOR \',\')
+                        FROM osm_way_node wn
+                        JOIN osm_node n ON n.id = wn.node_id
+                        WHERE wn.way_id = wt1.way_id GROUP BY wn.way_id) points
+                FROM osm_way_tag wt1
+                WHERE wt1.k IN(\'highway\')
+                ORDER BY wt1.way_id
+                LIMIT ' . intval($offset) . ', ' . intval($step);
+            $rows = $this->querySelect($sql);
+            foreach ($rows as $row) {
+                if (empty($row['points'])) {
+                    continue;
+                }
+                $points = json_decode('[' . $row['points'] . ']', true);
+                $this->insert('osm_highway', [
+                    'way_id' => $row['way_id'],
+                    'type' => $row['v'],
+                    'name' => $row['name'],
+                    'ref' => $row['ref'],
+                    'l' => new GeomMultiLineString([$points]),
+                ]);
+                if (is_callable($this->progressListener)) {
+                    call_user_func($this->progressListener, ++$doSize, $totalSize);
+                }
+            }
+            $offset += $step;
+        }
+    }
+
 
     /**
      * @return callable
