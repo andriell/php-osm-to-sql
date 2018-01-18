@@ -231,7 +231,9 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
     {
         $this->setInsertIgnore(true);
         $this->insertHighway();
+        $this->end();
         $this->insertBuilding();
+        $this->end();
         $this->insertPlace();
         $this->end();
     }
