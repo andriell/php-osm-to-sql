@@ -17,7 +17,7 @@ class PdoDbBuilderTest extends \PHPUnit_Framework_TestCase
     {
         ini_set('memory_limit', '100M');
 
-        $listener = new PdoDbBuilder('mysql:host=localhost;dbname=osm;port=3310', 'iebr2', 'ZXpzYh5tTjwKGI6D');
+        $listener = new PdoDbBuilder('mysql:host=localhost;dbname=osm_test;port=3306', 'user', 'password');
         $listener->setInsertSize(100);
         $listener->setInsertIgnore(true);
         $listener->setProgressListener(function ($size, $total) {
