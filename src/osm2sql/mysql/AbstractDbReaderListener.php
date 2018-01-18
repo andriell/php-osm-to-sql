@@ -8,35 +8,32 @@
 
 namespace osm2sql\mysql;
 
-abstract class DbReaderListener extends AbstractReaderListener
+abstract class AbstractDbReaderListener extends AbstractReaderListener
 {
     /** @var callable */
     private $progressListener;
 
-    abstract protected function doSelect($sqlStr);
-    abstract protected function doInsert($sqlStr);
-    abstract protected function doUpdate($sqlStr);
-    abstract protected function doDelete($sqlStr);
+    abstract protected function querySelect($sqlStr);
+    abstract protected function queryUpdate($sqlStr);
 
     public function write($table, $sql)
     {
-        $this->doInsert($sql);
+        $this->queryUpdate($sql);
     }
 
     public function deleteBuilding()
     {
-        $this->doDelete('DELETE FROM `osm_building`;');
+        $this->queryUpdate('DELETE FROM `osm_building`;');
     }
 
-    public function insertBuilding($step = 1000)
+    public function insertBuilding($step = 1000, $offset = 0)
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'building\', \'building:use\')';
-        $rows = $this->doSelect($sql);
+        $rows = $this->querySelect($sql);
         $totalSize = (int) array_shift($rows)['c'];
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
-        $offset = 0;
         $doSize = 0;
         while ($offset < $totalSize) {
             $sql = '
@@ -54,12 +51,12 @@ abstract class DbReaderListener extends AbstractReaderListener
                 WHERE wt1.k IN(\'building\', \'building:use\')
                 ORDER BY wt1.way_id
                 LIMIT ' . intval($offset) . ', ' . intval($step);
-            $rows = $this->doSelect($sql);
+            $rows = $this->querySelect($sql);
             foreach ($rows as $row) {
                 if (empty($row['points'])) {
                     continue;
                 }
-                $points = json_decode('{' . $row['points'] . '}', true);
+                $points = json_decode('[' . $row['points'] . ']', true);
                 if (count($points) == 1) {
                     $points[] = [$points[0][0] + 0.0000001, $points[0][1]];
                     $points[] = [$points[0][0] + 0.0000001, $points[0][1] + 0.0000001];
@@ -79,5 +76,21 @@ abstract class DbReaderListener extends AbstractReaderListener
             }
             $offset += $step;
         }
+    }
+
+    /**
+     * @return callable
+     */
+    public function getProgressListener()
+    {
+        return $this->progressListener;
+    }
+
+    /**
+     * @param callable $progressListener
+     */
+    public function setProgressListener($progressListener)
+    {
+        $this->progressListener = $progressListener;
     }
 }
