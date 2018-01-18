@@ -218,8 +218,10 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
     {
         $this->deleteHighway();
         $this->insertHighway();
+        $this->end();
         $this->deleteBuilding();
         $this->insertBuilding();
+        $this->end();
         $this->deletePlace();
         $this->insertPlace();
         $this->end();
