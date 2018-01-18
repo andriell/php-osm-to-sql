@@ -23,7 +23,6 @@ abstract class DbReaderListener extends AbstractReaderListener
         $this->doInsert($sql);
     }
 
-
     public function deleteBuilding()
     {
         $this->doDelete('DELETE FROM `osm_building`;');
