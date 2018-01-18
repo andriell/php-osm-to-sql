@@ -21,54 +21,8 @@ use osm2sql\entity\WayNode;
 use osm2sql\entity\WayTag;
 use osm2sql\XmlReaderListener;
 
-abstract class AbstractReaderListener implements XmlReaderListener
+abstract class AbstractReaderListener extends AbstractQueryBuilder implements XmlReaderListener
 {
-    private $tables = [];
-    private $insertSize = 100;
-    private $insertIgnore = true;
-
-    abstract protected function write($table, $str);
-
-    protected function writeTable($table)
-    {
-        if (!isset($this->tables[$table])) {
-            return;
-        }
-        if (empty($this->tables[$table])) {
-            return;
-        }
-
-        $sql1 = '';
-        $sql2 = '';
-        $p1 = '';
-        foreach ($this->tables[$table] as $values) {
-            $sql1 = '';
-            $sql2 .= $p1 . '(';
-            $p2 = '';
-            foreach ($values as $key => $val) {
-                $sql1 .= $p2 . '`' . $key . '`';
-                if ($val === null) {
-                    $sql2 .= $p2 . 'NULL';
-                } else {
-                    $sql2 .= $p2 . "'" . str_replace("'", "''", $val) . "'";
-                }
-                $p2 = ',';
-            }
-            $sql2 .= ')';
-            $p1 = ',';
-        }
-        $this->tables[$table] = [];
-        $sql = 'INSERT ' . ($this->insertIgnore ? 'IGNORE' : '') . ' INTO `' . $table . '` (' . $sql1 . ') VALUES ' . $sql2;
-        $this->write($table, $sql);
-    }
-
-    protected function insert($table, $values)
-    {
-        $this->tables[$table][] = $values;
-        if (count($this->tables[$table]) >= $this->insertSize) {
-            $this->writeTable($table);
-        }
-    }
 
     public function bounds(Bounds $bounds)
     {
@@ -181,44 +135,5 @@ abstract class AbstractReaderListener implements XmlReaderListener
 
     public function other(Other $other)
     {
-    }
-
-    public function end()
-    {
-        foreach ($this->tables as $tableName => $null) {
-            $this->writeTable($tableName);
-        }
-    }
-
-    /**
-     * @return int
-     */
-    public function getInsertSize()
-    {
-        return $this->insertSize;
-    }
-
-    /**
-     * @param int $insertSize
-     */
-    public function setInsertSize($insertSize)
-    {
-        $this->insertSize = $insertSize;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isInsertIgnore()
-    {
-        return $this->insertIgnore;
-    }
-
-    /**
-     * @param bool $insertIgnore
-     */
-    public function setInsertIgnore($insertIgnore)
-    {
-        $this->insertIgnore = $insertIgnore;
     }
 }
