@@ -68,9 +68,10 @@ abstract class DbReaderListener extends AbstractReaderListener
                 }
                 $points[] = $points[0];
                 $this->insert('osm_building', [
-                    'type' => '',
-                    'street' => '',
-                    'housenumber' => '',
+                    'way_id' => $row['way_id'],
+                    'type' => $row['v'],
+                    'street' => $row['street'],
+                    'housenumber' => $row['housenumber'],
                     'm' => new GeomMultiPolygon([$points]),
                 ]);
                 if (is_callable($this->progressListener)) {
