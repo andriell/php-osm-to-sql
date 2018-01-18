@@ -8,7 +8,7 @@
 
 namespace osm2sql\mysql;
 
-abstract class AbstractDbReaderListener extends AbstractReaderListener
+abstract class AbstractDbBuilder extends AbstractQueryBuilder
 {
     /** @var callable */
     private $progressListener;

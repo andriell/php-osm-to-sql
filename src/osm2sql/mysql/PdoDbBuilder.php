@@ -9,7 +9,7 @@
 namespace osm2sql\mysql;
 
 
-class PdoDbReaderListener extends AbstractDbReaderListener
+class PdoDbBuilder extends AbstractDbBuilder
 {
     /** @var \PDO */
     private $connection;
