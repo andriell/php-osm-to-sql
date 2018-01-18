@@ -37,6 +37,8 @@ abstract class AbstractQueryBuilder
                 $sql1 .= $p2 . '`' . $key . '`';
                 if ($val === null) {
                     $sql2 .= $p2 . 'NULL';
+                } elseif ($val instanceof GeomJson) {
+                    $sql2 .= $p2 . "ST_GeomFromGeoJSON('" . str_replace("'", "''", $val->__toString()) . "')";
                 } else {
                     $sql2 .= $p2 . "'" . str_replace("'", "''", $val) . "'";
                 }
