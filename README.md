@@ -94,7 +94,8 @@ Write data directly to the database and calculate building, highway, place table
 
 You can create your DbBuilder class and use database connection in your framework
 
-    class MyDbBuilder extends \osm2sql\mysql\AbstractDbBuilder {
+    class MyDbBuilder extends \osm2sql\mysql\AbstractDbBuilder
+    {
         // ...
         protected function querySelect($sqlStr)
         {
