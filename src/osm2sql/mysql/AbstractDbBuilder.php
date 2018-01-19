@@ -55,6 +55,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
+        $progress = $offset;
         while ($offset < $totalSize) {
             $sql = '
                 SELECT
@@ -72,7 +73,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                 LIMIT ' . intval($offset) . ', ' . intval($step);
             $rows = $this->querySelect($sql);
             foreach ($rows as $row) {
-                $offset++;
+                $progress++;
                 if (empty($row['points'])) {
                     continue;
                 }
@@ -91,9 +92,10 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'm' => new GeomMultiPolygon([[$points]]),
                 ]);
                 if (is_callable($this->progressListener)) {
-                    call_user_func($this->progressListener, $offset, $totalSize);
+                    call_user_func($this->progressListener, $progress, $totalSize);
                 }
             }
+            $offset += $step;
         }
         $this->end();
     }
@@ -111,6 +113,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
+        $progress = $offset;
         while ($offset < $totalSize) {
             $sql = '
                 SELECT
@@ -128,7 +131,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                 LIMIT ' . intval($offset) . ', ' . intval($step);
             $rows = $this->querySelect($sql);
             foreach ($rows as $row) {
-                $offset++;
+                $progress++;
                 if (empty($row['points'])) {
                     continue;
                 }
@@ -141,9 +144,10 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'l' => new GeomMultiLineString([$points]),
                 ]);
                 if (is_callable($this->progressListener)) {
-                    call_user_func($this->progressListener, $offset, $totalSize);
+                    call_user_func($this->progressListener, $progress, $totalSize);
                 }
             }
+            $offset += $step;
         }
         $this->end();
     }
@@ -162,6 +166,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
             call_user_func($this->progressListener, 0, $totalSize);
         }
         $step = 1;
+        $progress = $offset;
         while ($offset < $totalSize) {
             $sql = '
                 SELECT 
@@ -175,7 +180,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                 LIMIT ' . intval($offset) . ', ' . intval($step);
             $rows = $this->querySelect($sql);
             foreach ($rows as $row) {
-                $offset++;
+                $progress++;
                 if (empty($row['member'])) {
                     continue;
                 }
@@ -203,9 +208,10 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'inner' => new GeomMultiPolygon($inner ? [$inner] : []),
                 ]);
                 if (is_callable($this->progressListener)) {
-                    call_user_func($this->progressListener, $offset, $totalSize);
+                    call_user_func($this->progressListener, $progress, $totalSize);
                 }
             }
+            $offset += $step;
         }
         $this->end();
     }
