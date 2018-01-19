@@ -72,6 +72,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                 LIMIT ' . intval($offset) . ', ' . intval($step);
             $rows = $this->querySelect($sql);
             foreach ($rows as $row) {
+                $offset++;
                 if (empty($row['points'])) {
                     continue;
                 }
@@ -89,7 +90,6 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'housenumber' => $row['housenumber'],
                     'm' => new GeomMultiPolygon([[$points]]),
                 ]);
-                $offset++;
                 if (is_callable($this->progressListener)) {
                     call_user_func($this->progressListener, $offset, $totalSize);
                 }
@@ -128,6 +128,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                 LIMIT ' . intval($offset) . ', ' . intval($step);
             $rows = $this->querySelect($sql);
             foreach ($rows as $row) {
+                $offset++;
                 if (empty($row['points'])) {
                     continue;
                 }
@@ -139,7 +140,6 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'ref' => $row['ref'],
                     'l' => new GeomMultiLineString([$points]),
                 ]);
-                $offset++;
                 if (is_callable($this->progressListener)) {
                     call_user_func($this->progressListener, $offset, $totalSize);
                 }
@@ -175,6 +175,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                 LIMIT ' . intval($offset) . ', ' . intval($step);
             $rows = $this->querySelect($sql);
             foreach ($rows as $row) {
+                $offset++;
                 if (empty($row['member'])) {
                     continue;
                 }
@@ -201,7 +202,6 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'outer' => new GeomMultiPolygon($outer ? [$outer] : []),
                     'inner' => new GeomMultiPolygon($inner ? [$inner] : []),
                 ]);
-                $offset++;
                 if (is_callable($this->progressListener)) {
                     call_user_func($this->progressListener, $offset, $totalSize);
                 }
