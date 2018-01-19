@@ -51,7 +51,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'building\', \'building:use\')';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'];
+        $totalSize = (int) array_shift($rows)['c'] - $offset;
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
@@ -108,7 +108,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'highway\')';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'];
+        $totalSize = (int) array_shift($rows)['c'] - $offset;
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
@@ -159,7 +159,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.relation_id) c FROM osm_relation_tag rt WHERE rt.k = \'place\'';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'];
+        $totalSize = (int) array_shift($rows)['c'] - $offset;
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
