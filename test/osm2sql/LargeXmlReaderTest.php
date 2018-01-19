@@ -36,7 +36,7 @@ class LargeXmlReaderTest extends \PHPUnit_Framework_TestCase
         $data = $listener->getData();
         $this->assertEquals($data, file_get_contents($fileSql), 'SQL generation');
 
-        $progressActual = "0/1743\n1000/1743\n1743/1743\n";
+        $progressActual = "0/1.74\n1/1.74\n1.74/1.74\n";
         $this->assertEquals($progress, $progressActual, 'Progress listener');
     }
 }
