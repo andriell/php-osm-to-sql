@@ -51,11 +51,10 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'building\', \'building:use\')';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'] - $offset;
+        $totalSize = (int) array_shift($rows)['c'];
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
-        $doSize = 0;
         while ($offset < $totalSize) {
             $sql = '
                 SELECT
@@ -90,11 +89,11 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'housenumber' => $row['housenumber'],
                     'm' => new GeomMultiPolygon([[$points]]),
                 ]);
+                $offset++;
                 if (is_callable($this->progressListener)) {
-                    call_user_func($this->progressListener, ++$doSize, $totalSize);
+                    call_user_func($this->progressListener, $offset, $totalSize);
                 }
             }
-            $offset += $step;
         }
         $this->end();
     }
@@ -108,11 +107,10 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'highway\')';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'] - $offset;
+        $totalSize = (int) array_shift($rows)['c'];
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
-        $doSize = 0;
         while ($offset < $totalSize) {
             $sql = '
                 SELECT
@@ -141,11 +139,11 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'ref' => $row['ref'],
                     'l' => new GeomMultiLineString([$points]),
                 ]);
+                $offset++;
                 if (is_callable($this->progressListener)) {
-                    call_user_func($this->progressListener, ++$doSize, $totalSize);
+                    call_user_func($this->progressListener, $offset, $totalSize);
                 }
             }
-            $offset += $step;
         }
         $this->end();
     }
@@ -159,11 +157,10 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.relation_id) c FROM osm_relation_tag rt WHERE rt.k = \'place\'';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'] - $offset;
+        $totalSize = (int) array_shift($rows)['c'];
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
-        $doSize = 0;
         $step = 1;
         while ($offset < $totalSize) {
             $sql = '
@@ -204,12 +201,11 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'outer' => new GeomMultiPolygon($outer ? [$outer] : []),
                     'inner' => new GeomMultiPolygon($inner ? [$inner] : []),
                 ]);
-
+                $offset++;
                 if (is_callable($this->progressListener)) {
-                    call_user_func($this->progressListener, ++$doSize, $totalSize);
+                    call_user_func($this->progressListener, $offset, $totalSize);
                 }
             }
-            $offset += $step;
         }
         $this->end();
     }
