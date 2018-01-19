@@ -1,6 +1,6 @@
 {
     "name": "andriell/osm2sql",
-    "description": "Library to import OSM (open street map) XML file in to SQL database",
+    "description": "Library to import OSM (open street map) XML file into SQL database",
     "type": "library",
     "keywords": [
         "osm",

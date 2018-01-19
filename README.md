@@ -76,7 +76,7 @@ Write data directly to the database and calculate building, highway, place table
     
     $largeXmlReader->setFilePath($file);
     $largeXmlReader->setListener($listener);
-    $largeXmlReader->setProgressListener(function ( $readSize, $totalSize) {
+    $largeXmlReader->setProgressListener(function($readSize, $totalSize) {
         echo  'Read file ' . $readSize . ' Mb of ' . $totalSize . " Mb\n";
     });
     // Insert new relations, way, node from osm file to database
