@@ -52,10 +52,10 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'building\', \'building:use\')';
         $rows = $this->querySelect($sql);
         $totalSize = (int) array_shift($rows)['c'];
+        $progress = $offset;
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
-        $progress = $offset;
         while ($offset < $totalSize) {
             $sql = '
                 SELECT
@@ -204,8 +204,8 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     'type' => $row['v'],
                     'name' => $row['name'],
                     'old_name' => $row['old_name'],
-                    'outer' => new GeomMultiPolygon($outer ? [$outer] : []),
-                    'inner' => new GeomMultiPolygon($inner ? [$inner] : []),
+                    'outer' => new GeomMultiPolygon($outer),
+                    'inner' => new GeomMultiPolygon($inner),
                 ]);
                 if (is_callable($this->progressListener)) {
                     call_user_func($this->progressListener, $progress, $totalSize);
