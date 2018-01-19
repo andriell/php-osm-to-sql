@@ -69,6 +69,10 @@ Write data directly to the database and calculate building, highway, place table
     $listener->setProgressListener(function ($size, $total) {
         echo 'Update DB ' . $size . ' row of ' . $total . " rows\n";
     });
+    $listener->setExceptionListener(function($e, $sqlStr) {
+        echo $sqlStr . "\n";
+        echo $e . "\n";
+    });
     // Delete all relations, way, node in database
     $listener->deleteRelation();
     $listener->deleteWay();

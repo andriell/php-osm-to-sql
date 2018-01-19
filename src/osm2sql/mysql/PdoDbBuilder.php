@@ -13,6 +13,8 @@ class PdoDbBuilder extends AbstractDbBuilder
 {
     /** @var \PDO */
     private $connection;
+    /** @var callable */
+    private $exceptionListener;
 
     public function __construct($dsn, $user, $password, $options = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"])
     {
@@ -21,16 +23,49 @@ class PdoDbBuilder extends AbstractDbBuilder
 
     protected function querySelect($sqlStr)
     {
-        $rows = $this->connection->query($sqlStr);
         $r = [];
-        foreach ($rows as $row) {
-            $r[] = $row;
+        try {
+            $rows = $this->connection->query($sqlStr);
+            foreach ($rows as $row) {
+                $r[] = $row;
+            }
+        } catch (\Exception $e) {
+            if (is_callable($this->exceptionListener)) {
+                call_user_func($this->exceptionListener, $e, $sqlStr);
+            } else {
+                throw $e;
+            }
         }
         return $r;
     }
 
     protected function queryUpdate($sqlStr)
     {
-        return $this->connection->exec($sqlStr);
+        try {
+            return $this->connection->exec($sqlStr);
+        } catch (\Exception $e) {
+            if (is_callable($this->exceptionListener)) {
+                call_user_func($this->exceptionListener, $e, $sqlStr);
+            } else {
+                throw $e;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getExceptionListener()
+    {
+        return $this->exceptionListener;
+    }
+
+    /**
+     * @param callable $exceptionListener
+     */
+    public function setExceptionListener($exceptionListener)
+    {
+        $this->exceptionListener = $exceptionListener;
     }
 }
