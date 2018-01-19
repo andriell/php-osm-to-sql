@@ -28,6 +28,9 @@ class LargeXmlReader
     private $filePath;
     private $bufferSize = 1048576;
     private $encoding = 'UTF-8';
+    private $readBlock = 0;
+    private $startBlock = 0;
+    private $endBlock = PHP_INT_MAX;
 
     private $stack;
 
@@ -108,7 +111,7 @@ class LargeXmlReader
         $this->listener = $listener;
     }
 
-    private function realFileSize($file)
+    public function fileSize($file)
     {
         $fp = fopen($file, 'r');
         $size = 0;
@@ -139,15 +142,15 @@ class LargeXmlReader
         if (empty($fh)) {
             throw new Exception('Can not open file "' . $this->filePath . '"');
         }
-        $totalSize = $this->realFileSize($this->filePath);
-        $readSize = 0;
+        $totalSize = $this->fileSize($this->filePath);
+        $this->readBlock = 0;
         while (!($isFinal = feof($fh))) {
             if (is_callable($this->progressListener)) {
-                call_user_func($this->progressListener, $readSize, $totalSize);
+                call_user_func($this->progressListener, $this->readBlock, $totalSize);
             }
             $data = fread($fh, $this->bufferSize);
             xml_parse($parser, $data, $isFinal);
-            $readSize++;
+            $this->readBlock++;
         }
         $this->listener->end();
         if (is_callable($this->progressListener)) {
@@ -162,41 +165,61 @@ class LargeXmlReader
         $entity = null;
         if ($name == 'NODE') {
             $entity = new Node($attr);
-            $this->listener->node($entity);
+            if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                $this->listener->node($entity);
+            }
         } elseif ($name == 'TAG') {
             if ($this->stack->top() instanceof Node) {
                 $entity = new NodeTag($this->getParentId(), $attr);
-                $this->listener->nodeTag($entity);
+                if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                    $this->listener->nodeTag($entity);
+                }
             } elseif ($this->stack->top() instanceof Way) {
                 $entity = new WayTag($this->getParentId(), $attr);
-                $this->listener->wayTag($entity);
+                if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                    $this->listener->wayTag($entity);
+                }
             } elseif ($this->stack->top() instanceof Relation) {
                 $entity = new RelationTag($this->getParentId(), $attr);
-                $this->listener->relationTag($entity);
+                if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                    $this->listener->relationTag($entity);
+                }
             }
         } elseif ($name == 'ND') {
             $entity = new WayNode($this->getParentId(), $attr);
             $entity->setSort($this->nextSort());
-            $this->listener->wayNode($entity);
+            if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                $this->listener->wayNode($entity);
+            }
         } elseif ($name == 'MEMBER') {
             $entity = new RelationMember($this->getParentId(), $attr);
             $entity->setSort($this->nextSort());
-            $this->listener->relationMember($entity);
+            if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                $this->listener->relationMember($entity);
+            }
         } elseif ($name == 'WAY') {
             $entity = new Way($attr);
-            $this->listener->way($entity);
+            if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                $this->listener->way($entity);
+            }
         } elseif ($name == 'RELATION') {
             $entity = new Relation($attr);
-            $this->listener->relation($entity);
+            if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                $this->listener->relation($entity);
+            }
         } elseif ($name == 'OSM') {
             $entity = new Osm($attr);
             $this->listener->osm($entity);
         } elseif ($name == 'BOUNDS') {
             $entity = new Bounds($attr);
-            $this->listener->bounds($entity);
+            if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                $this->listener->bounds($entity);
+            }
         } else {
             $entity = new Other($name, $attr);
-            $this->listener->other($entity);
+            if ($this->startBlock <= $this->readBlock && $this->endBlock >= $this->readBlock) {
+                $this->listener->other($entity);
+            }
         }
 
         $this->stack->push($entity);
@@ -239,5 +262,37 @@ class LargeXmlReader
     public function setProgressListener($progressListener)
     {
         $this->progressListener = $progressListener;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStartBlock()
+    {
+        return $this->startBlock;
+    }
+
+    /**
+     * @param int $startBlock
+     */
+    public function setStartBlock($startBlock)
+    {
+        $this->startBlock = $startBlock;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEndBlock()
+    {
+        return $this->endBlock;
+    }
+
+    /**
+     * @param int $endBlock
+     */
+    public function setEndBlock($endBlock)
+    {
+        $this->endBlock = $endBlock;
     }
 }
