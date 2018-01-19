@@ -23,6 +23,11 @@ class PdoDbBuilderTest extends \PHPUnit_Framework_TestCase
         $listener->setProgressListener(function ($size, $total) {
             echo $size . ' ' . $total . "\n";
         });
-        $listener->replaceAll();
+        $listener->deleteHighway();
+        $listener->calculateHighway();
+        $listener->deleteBuilding();
+        $listener->calculateBuilding();
+        $listener->deletePlace();
+        $listener->calculatePlace();
     }
 }

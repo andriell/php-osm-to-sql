@@ -112,6 +112,7 @@ class LargeXmlReader
     {
         $fp = fopen($file, 'r');
         $size = 0;
+        $data = '';
         while (true) {
             $data = fread($fp, $this->bufferSize);
             if (feof($fp)) {

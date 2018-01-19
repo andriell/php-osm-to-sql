@@ -8,7 +8,7 @@
 
 namespace osm2sql\mysql;
 
-abstract class AbstractDbBuilder extends AbstractQueryBuilder
+abstract class AbstractDbBuilder extends AbstractReaderListener
 {
     /** @var callable */
     private $progressListener;
@@ -21,12 +21,33 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
         $this->queryUpdate($sql);
     }
 
+    public function deleteNode()
+    {
+        $this->queryUpdate('DELETE FROM `osm_node_tag`');
+        $this->queryUpdate('DELETE FROM `osm_node`');
+
+    }
+
+    public function deleteRelation()
+    {
+        $this->queryUpdate('DELETE FROM `osm_relation_tag`');
+        $this->queryUpdate('DELETE FROM `osm_relation_member`');
+        $this->queryUpdate('DELETE FROM `osm_relation`');
+    }
+
+    public function deleteWay()
+    {
+        $this->queryUpdate('DELETE FROM `osm_way_tag`');
+        $this->queryUpdate('DELETE FROM `osm_way_node`');
+        $this->queryUpdate('DELETE FROM `osm_way`');
+    }
+
     public function deleteBuilding()
     {
         $this->queryUpdate('DELETE FROM `osm_building`');
     }
 
-    public function insertBuilding($step = 1000, $offset = 0)
+    public function calculateBuilding($step = 1000, $offset = 0)
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'building\', \'building:use\')';
         $rows = $this->querySelect($sql);
@@ -75,6 +96,7 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
             }
             $offset += $step;
         }
+        $this->end();
     }
 
     public function deleteHighway()
@@ -82,7 +104,7 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
         $this->queryUpdate('DELETE FROM `osm_highway`');
     }
 
-    public function insertHighway($step = 1000, $offset = 0)
+    public function calculateHighway($step = 1000, $offset = 0)
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'highway\')';
         $rows = $this->querySelect($sql);
@@ -125,6 +147,7 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
             }
             $offset += $step;
         }
+        $this->end();
     }
 
     public function deletePlace()
@@ -132,7 +155,7 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
         $this->queryUpdate('DELETE FROM `osm_place`');
     }
 
-    public function insertPlace($offset = 0)
+    public function calculatePlace($offset = 0)
     {
         $sql = 'SELECT COUNT(rt.relation_id) c FROM osm_relation_tag rt WHERE rt.k = \'place\'';
         $rows = $this->querySelect($sql);
@@ -188,6 +211,7 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
             }
             $offset += $step;
         }
+        $this->end();
     }
 
     private function getWayPoints($wayId) {
@@ -212,30 +236,6 @@ abstract class AbstractDbBuilder extends AbstractQueryBuilder
         }
         $points[] = $points[0];
         return $points;
-    }
-
-    public function replaceAll()
-    {
-        $this->deleteHighway();
-        $this->insertHighway();
-        $this->end();
-        $this->deleteBuilding();
-        $this->insertBuilding();
-        $this->end();
-        $this->deletePlace();
-        $this->insertPlace();
-        $this->end();
-    }
-
-    public function updateAll()
-    {
-        $this->setInsertIgnore(true);
-        $this->insertHighway();
-        $this->end();
-        $this->insertBuilding();
-        $this->end();
-        $this->insertPlace();
-        $this->end();
     }
 
     /**
