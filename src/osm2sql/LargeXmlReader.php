@@ -108,6 +108,22 @@ class LargeXmlReader
         $this->listener = $listener;
     }
 
+    private function realFileSize($file)
+    {
+        $fp = fopen($file, 'r');
+        $size = 0;
+        while (true) {
+            $data = fread($fp, $this->bufferSize);
+            if (feof($fp)) {
+                break;
+            }
+            $size++;
+        };
+        fclose($fp);
+        $size += round(strlen($data) / $this->bufferSize, 2);
+        return $size;
+    }
+
     public function parse()
     {
         $parser = xml_parser_create($this->encoding);
@@ -122,7 +138,7 @@ class LargeXmlReader
         if (empty($fh)) {
             throw new Exception('Can not open file "' . $this->filePath . '"');
         }
-        $totalSize = filesize($this->filePath);
+        $totalSize = $this->realFileSize($this->filePath);
         $readSize = 0;
         while (!($isFinal = feof($fh))) {
             if (is_callable($this->progressListener)) {
@@ -130,7 +146,7 @@ class LargeXmlReader
             }
             $data = fread($fh, $this->bufferSize);
             xml_parse($parser, $data, $isFinal);
-            $readSize += $this->bufferSize;
+            $readSize++;
         }
         $this->listener->end();
         if (is_callable($this->progressListener)) {
