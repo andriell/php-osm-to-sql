@@ -23,28 +23,28 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
 
     public function deleteNode()
     {
-        $this->queryUpdate('DELETE FROM `osm_node_tag`');
-        $this->queryUpdate('DELETE FROM `osm_node`');
+        $this->queryUpdate('TRUNCATE `osm_node_tag`');
+        $this->queryUpdate('TRUNCATE `osm_node`');
 
     }
 
     public function deleteRelation()
     {
-        $this->queryUpdate('DELETE FROM `osm_relation_tag`');
-        $this->queryUpdate('DELETE FROM `osm_relation_member`');
-        $this->queryUpdate('DELETE FROM `osm_relation`');
+        $this->queryUpdate('TRUNCATE `osm_relation_tag`');
+        $this->queryUpdate('TRUNCATE `osm_relation_member`');
+        $this->queryUpdate('TRUNCATE `osm_relation`');
     }
 
     public function deleteWay()
     {
-        $this->queryUpdate('DELETE FROM `osm_way_tag`');
-        $this->queryUpdate('DELETE FROM `osm_way_node`');
-        $this->queryUpdate('DELETE FROM `osm_way`');
+        $this->queryUpdate('TRUNCATE `osm_way_tag`');
+        $this->queryUpdate('TRUNCATE `osm_way_node`');
+        $this->queryUpdate('TRUNCATE `osm_way`');
     }
 
     public function deleteBuilding()
     {
-        $this->queryUpdate('DELETE FROM `osm_building`');
+        $this->queryUpdate('TRUNCATE `osm_building`');
     }
 
     public function calculateBuilding($step = 1000, $offset = 0)
@@ -102,7 +102,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
 
     public function deleteHighway()
     {
-        $this->queryUpdate('DELETE FROM `osm_highway`');
+        $this->queryUpdate('TRUNCATE `osm_highway`');
     }
 
     public function calculateHighway($step = 1000, $offset = 0)
@@ -154,7 +154,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
 
     public function deletePlace()
     {
-        $this->queryUpdate('DELETE FROM `osm_place`');
+        $this->queryUpdate('TRUNCATE `osm_place`');
     }
 
     public function calculatePlace($offset = 0)
