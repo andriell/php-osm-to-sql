@@ -176,7 +176,7 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     (SELECT rt2.v FROM osm_relation_tag rt2 WHERE rt2.relation_id = rt1.relation_id AND rt2.k = \'old_name\') old_name,
                     (SELECT GROUP_CONCAT(CONCAT(\'{"type":"\', rm.`type`, \'","role":"\', rm.role, \'","ref":\', rm.ref ,\'}\') ORDER BY rm.sort SEPARATOR \',\') FROM osm_relation_member rm WHERE rm.relation_id = rt1.relation_id) member
                 FROM osm_relation_tag rt1
-                WHERE rt1.k = IN (\'place\', \'boundary\')
+                WHERE rt1.k IN (\'place\', \'boundary\')
                 LIMIT ' . intval($offset) . ', ' . intval($step);
             $rows = $this->querySelect($sql);
             foreach ($rows as $row) {
