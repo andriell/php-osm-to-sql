@@ -12,14 +12,14 @@ namespace osm2sql\entity;
 class Other
 {
     private $name = '';
-    private $attr = [];
+    private $attr = array();
 
     /**
      * Entity constructor.
      * @param string $name
      * @param array $attr
      */
-    public function __construct($name, array $attr = [])
+    public function __construct($name, array $attr = array())
     {
         $this->name = $name;
         $this->attr = $attr;

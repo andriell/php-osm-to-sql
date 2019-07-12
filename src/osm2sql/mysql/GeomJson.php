@@ -11,7 +11,7 @@ namespace osm2sql\mysql;
 
 class GeomJson
 {
-    private $data = [];
+    private $data = array();
 
     /**
      * GeomJson constructor.

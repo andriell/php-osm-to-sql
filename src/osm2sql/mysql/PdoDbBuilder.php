@@ -16,14 +16,19 @@ class PdoDbBuilder extends AbstractDbBuilder
     /** @var callable */
     private $exceptionListener;
 
-    public function __construct($dsn, $user, $password, $options = [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"])
+    public function __construct($dsn, $user, $password, $options = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"))
     {
         $this->connection = new \PDO($dsn, $user, $password, $options);
     }
 
+    /**
+     * @param $sqlStr
+     * @return array
+     * @throws \Exception
+     */
     protected function querySelect($sqlStr)
     {
-        $r = [];
+        $r = array();
         try {
             $rows = $this->connection->query($sqlStr);
             foreach ($rows as $row) {
@@ -39,6 +44,11 @@ class PdoDbBuilder extends AbstractDbBuilder
         return $r;
     }
 
+    /**
+     * @param $sqlStr
+     * @return int
+     * @throws \Exception
+     */
     protected function queryUpdate($sqlStr)
     {
         try {
