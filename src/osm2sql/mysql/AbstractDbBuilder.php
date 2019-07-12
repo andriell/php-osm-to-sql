@@ -78,6 +78,9 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     continue;
                 }
                 $points = json_decode('[' . $row['points'] . ']', true);
+                if (!is_array($points)) {
+                    continue;
+                }
                 if (count($points) == 1) {
                     $points[] = [$points[0][0] + 0.0000001, $points[0][1]];
                     $points[] = [$points[0][0] + 0.0000001, $points[0][1] + 0.0000001];
@@ -231,6 +234,9 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
             return [];
         }
         $points = json_decode('[' . $row['points'] . ']', true);
+        if (!is_array($points)) {
+            return [];
+        }
         if (count($points) == 1) {
             $points[] = [$points[0][0] + 0.0000001, $points[0][1]];
             $points[] = [$points[0][0] + 0.0000001, $points[0][1] + 0.0000001];

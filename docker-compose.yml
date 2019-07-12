@@ -1,0 +1,43 @@
+version: '3.1'
+
+services:
+    php:
+        build:
+            context: test/docker/php
+            dockerfile: Dockerfile
+        container_name: osm2sql_php
+        restart: always
+        ports:
+            - 81:80
+            - 9003:9003
+        volumes:
+            - ./:/var/www/html
+            - ./test/docker/php/www.conf:/etc/php-fpm.d/www.conf
+            - ./test/docker/php/php.ini:/etc/php.ini
+            - ./var/log/php-fpm:/var/log/php-fpm
+        environment:
+            XDEBUG_CONFIG: remote_host=192.168.99.1 remote_enable=1 remote_port=9003 remote_log=/var/log/php-fpm/xdebug.log
+            PHP_IDE_CONFIG: serverName=docker_osm2sql
+        links:
+            - mysql
+        networks:
+            - osm2sql_net
+    mysql:
+        image: mysql:5.7
+        container_name: osm2sql_mysql
+        volumes:
+              - osm2sql_mysql_volume:/var/lib/mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: osm2sql
+            MYSQL_USER: osm2sql
+            MYSQL_PASSWORD: password
+        ports:
+            - 3307:3306
+        networks:
+            - osm2sql_net
+volumes:
+    osm2sql_mysql_volume: {}
+networks:
+    osm2sql_net: {}

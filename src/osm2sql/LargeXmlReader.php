@@ -128,6 +128,9 @@ class LargeXmlReader
         return $size;
     }
 
+    /**
+     * @throws Exception
+     */
     public function parse()
     {
         $parser = xml_parser_create($this->encoding);
