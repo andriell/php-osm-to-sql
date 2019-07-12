@@ -51,7 +51,8 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'building\', \'building:use\')';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'];
+        $totalSize = array_shift($rows);
+        $totalSize = (int) $totalSize['c'];
         $progress = $offset;
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
@@ -82,18 +83,18 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     continue;
                 }
                 if (count($points) == 1) {
-                    $points[] = [$points[0][0] + 0.0000001, $points[0][1]];
-                    $points[] = [$points[0][0] + 0.0000001, $points[0][1] + 0.0000001];
-                    $points[] = [$points[0][0], $points[0][1] + 0.0000001];
+                    $points[] = array($points[0][0] + 0.0000001, $points[0][1]);
+                    $points[] = array($points[0][0] + 0.0000001, $points[0][1] + 0.0000001);
+                    $points[] = array($points[0][0], $points[0][1] + 0.0000001);
                 }
                 $points[] = $points[0];
-                $this->insert('osm_building', [
+                $this->insert('osm_building', array(
                     'way_id' => $row['way_id'],
                     'type' => $row['v'],
                     'street' => $row['street'],
                     'housenumber' => $row['housenumber'],
-                    'm' => new GeomMultiPolygon([[$points]]),
-                ]);
+                    'm' => new GeomMultiPolygon(array(array($points))),
+                ));
                 if (is_callable($this->progressListener)) {
                     call_user_func($this->progressListener, $progress, $totalSize);
                 }
@@ -112,7 +113,8 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.way_id) c FROM osm_way_tag rt WHERE rt.k IN(\'highway\')';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'];
+        $totalSize = array_shift($rows);
+        $totalSize = (int) $totalSize['c'];
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
@@ -139,13 +141,13 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     continue;
                 }
                 $points = json_decode('[' . $row['points'] . ']', true);
-                $this->insert('osm_highway', [
+                $this->insert('osm_highway', array(
                     'way_id' => $row['way_id'],
                     'type' => $row['v'],
                     'name' => $row['name'],
                     'ref' => $row['ref'],
-                    'l' => new GeomMultiLineString([$points]),
-                ]);
+                    'l' => new GeomMultiLineString(array($points)),
+                ));
                 if (is_callable($this->progressListener)) {
                     call_user_func($this->progressListener, $progress, $totalSize);
                 }
@@ -164,7 +166,8 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
     {
         $sql = 'SELECT COUNT(rt.relation_id) c FROM osm_relation_tag rt WHERE rt.k = \'place\'';
         $rows = $this->querySelect($sql);
-        $totalSize = (int) array_shift($rows)['c'];
+        $totalSize = array_shift($rows);
+        $totalSize = (int) $totalSize['c'];
         if (is_callable($this->progressListener)) {
             call_user_func($this->progressListener, 0, $totalSize);
         }
@@ -188,28 +191,28 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                     continue;
                 }
                 $members = json_decode('[' . $row['member'] . ']', true);
-                $outer = [];
-                $inner = [];
+                $outer = array();
+                $inner = array();
                 foreach ($members as $member) {
                     if ($member['type'] == 'way') {
                         $points = $this->getWayPoints($member['ref']);
                         if ($points) {
                             if ($member['role'] == 'outer') {
-                                $outer[] = [$points];
+                                $outer[] = array($points);
                             } elseif ($member['role'] == 'inner') {
-                                $inner[] = [$points];
+                                $inner[] = array($points);
                             }
                         }
                     }
                 }
-                $this->insert('osm_place', [
+                $this->insert('osm_place', array(
                     'relation_id' => $row['relation_id'],
                     'type' => $row['v'],
                     'name' => $row['name'],
                     'old_name' => $row['old_name'],
                     'outer' => new GeomMultiPolygon($outer),
                     'inner' => new GeomMultiPolygon($inner),
-                ]);
+                ));
                 if (is_callable($this->progressListener)) {
                     call_user_func($this->progressListener, $progress, $totalSize);
                 }
@@ -227,20 +230,20 @@ abstract class AbstractDbBuilder extends AbstractReaderListener
                 WHERE wn.way_id = ' . intval($wayId) . ' GROUP BY wn.way_id';
         $rows = $this->querySelect($sql);
         if (empty($rows)) {
-            return [];
+            return array();
         }
         $row = array_shift($rows);
         if (empty($row['points'])) {
-            return [];
+            return array();
         }
         $points = json_decode('[' . $row['points'] . ']', true);
         if (!is_array($points)) {
-            return [];
+            return array();
         }
         if (count($points) == 1) {
-            $points[] = [$points[0][0] + 0.0000001, $points[0][1]];
-            $points[] = [$points[0][0] + 0.0000001, $points[0][1] + 0.0000001];
-            $points[] = [$points[0][0], $points[0][1] + 0.0000001];
+            $points[] = array($points[0][0] + 0.0000001, $points[0][1]);
+            $points[] = array($points[0][0] + 0.0000001, $points[0][1] + 0.0000001);
+            $points[] = array($points[0][0], $points[0][1] + 0.0000001);
         }
         $points[] = $points[0];
         return $points;

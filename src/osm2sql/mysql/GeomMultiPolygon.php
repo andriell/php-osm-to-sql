@@ -13,6 +13,6 @@ class GeomMultiPolygon extends GeomJson
 {
     public function __construct(array $data)
     {
-        parent::__construct(['type' => 'MultiPolygon', 'coordinates' => $data]);
+        parent::__construct(array('type' => 'MultiPolygon', 'coordinates' => $data));
     }
 }

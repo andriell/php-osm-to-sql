@@ -11,7 +11,7 @@ namespace osm2sql;
 
 class Stack
 {
-    private $data = [];
+    private $data = array();
     private $index = -1;
 
     public function push($e)

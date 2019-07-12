@@ -30,7 +30,7 @@ abstract class AbstractReaderListener extends AbstractQueryBuilder implements Xm
 
     public function node(Node $node)
     {
-        $values = [];
+        $values = array();
         $values['id'] = $node->getId();
         $values['version'] = $node->getVersion();
         $values['lat'] = $node->getLat();
@@ -50,7 +50,7 @@ abstract class AbstractReaderListener extends AbstractQueryBuilder implements Xm
 
     public function nodeTag(NodeTag $nodeTag)
     {
-        $values = [];
+        $values = array();
         $values['node_id'] = $nodeTag->getParentId();
         $values['k'] = $nodeTag->getK();
         $values['v'] = $nodeTag->getV();
@@ -63,7 +63,7 @@ abstract class AbstractReaderListener extends AbstractQueryBuilder implements Xm
 
     public function relation(Relation $relation)
     {
-        $values = [];
+        $values = array();
         $values['id'] = $relation->getId();
         $values['version'] = $relation->getVersion();
         $values['user'] = $relation->getUser();
@@ -80,7 +80,7 @@ abstract class AbstractReaderListener extends AbstractQueryBuilder implements Xm
 
     public function relationMember(RelationMember $relationMember)
     {
-        $values = [];
+        $values = array();
         $values['relation_id'] = $relationMember->getParentId();
         $values['type'] = $relationMember->getType();
         $values['ref'] = $relationMember->getRef();
@@ -91,7 +91,7 @@ abstract class AbstractReaderListener extends AbstractQueryBuilder implements Xm
 
     public function relationTag(RelationTag $relationTag)
     {
-        $values = [];
+        $values = array();
         $values['relation_id'] = $relationTag->getParentId();
         $values['k'] = $relationTag->getK();
         $values['v'] = $relationTag->getV();
@@ -100,7 +100,7 @@ abstract class AbstractReaderListener extends AbstractQueryBuilder implements Xm
 
     public function way(Way $way)
     {
-        $values = [];
+        $values = array();
         $values['id'] = $way->getId();
         $values['version'] = $way->getVersion();
         $values['user'] = $way->getUser();
@@ -117,7 +117,7 @@ abstract class AbstractReaderListener extends AbstractQueryBuilder implements Xm
 
     public function wayNode(WayNode $wayNode)
     {
-        $values = [];
+        $values = array();
         $values['way_id'] = $wayNode->getParentId();
         $values['node_id'] = $wayNode->getRef();
         $values['sort'] = $wayNode->getSort();
@@ -126,7 +126,7 @@ abstract class AbstractReaderListener extends AbstractQueryBuilder implements Xm
 
     public function wayTag(WayTag $wayTag)
     {
-        $values = [];
+        $values = array();
         $values['way_id'] = $wayTag->getParentId();
         $values['k'] = $wayTag->getK();
         $values['v'] = $wayTag->getV();

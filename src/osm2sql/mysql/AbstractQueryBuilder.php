@@ -11,7 +11,7 @@ namespace osm2sql\mysql;
 
 abstract class AbstractQueryBuilder
 {
-    private $tables = [];
+    private $tables = array();
     private $insertSize = 100;
     private $insertIgnore = true;
 
@@ -38,16 +38,16 @@ abstract class AbstractQueryBuilder
                 if ($val === null) {
                     $sql2 .= $p2 . 'NULL';
                 } elseif ($val instanceof GeomJson) {
-                    $sql2 .= $p2 . "ST_GeomFromGeoJSON('" . str_replace(["'", '\\'], ["''", '\\\\'], $val->__toString()) . "')";
+                    $sql2 .= $p2 . "ST_GeomFromGeoJSON('" . str_replace(array("'", '\\'), array("''", '\\\\'), $val->__toString()) . "')";
                 } else {
-                    $sql2 .= $p2 . "'" . str_replace(["'", '\\'], ["''", '\\\\'], $val) . "'";
+                    $sql2 .= $p2 . "'" . str_replace(array("'", '\\'), array("''", '\\\\'), $val) . "'";
                 }
                 $p2 = ',';
             }
             $sql2 .= ')';
             $p1 = ',';
         }
-        $this->tables[$table] = [];
+        $this->tables[$table] = array();
         $sql = 'INSERT ' . ($this->insertIgnore ? 'IGNORE' : '') . ' INTO `' . $table . '` (' . $sql1 . ') VALUES ' . $sql2;
         $this->write($table, $sql);
     }

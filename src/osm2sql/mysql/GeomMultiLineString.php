@@ -13,6 +13,6 @@ class GeomMultiLineString extends GeomJson
 {
     public function __construct(array $data)
     {
-        parent::__construct(['type' => 'MultiLineString', 'coordinates' => $data]);
+        parent::__construct(array('type' => 'MultiLineString', 'coordinates' => $data));
     }
 }

@@ -3,6 +3,8 @@
 
 ## Quick start
 
+Download OSM XML here https://download.bbbike.org/
+
 ### Example 1
 Convert OSM to SQL file
 1. Create database tables from file resources/mysql.sql
