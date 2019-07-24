@@ -2,3 +2,4 @@ docker-compose up -d
 docker-compose down
 docker exec -it osm2sql_php /bin/bash
 vendor/bin/phpunit.bat --bootstrap vendor/autoload.php --filter testParse test/osm2sql/mysql/PdoDbBuilderTest.php
+./protoc.exe --php_out=src resources/*.proto

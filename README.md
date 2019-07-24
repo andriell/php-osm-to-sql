@@ -1,5 +1,8 @@
 # Convert OSM XML file to SQL for MySQL
 
+[![Software License](https://img.shields.io/github/license/andriell/php-osm-to-sql.svg)](LICENSE)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/andriell/osm2sql.svg)](https://packagist.org/packages/andriell/osm2sql)
+[![Total Downloads](https://img.shields.io/packagist/dt/andriell/osm2sql.svg)](https://packagist.org/packages/andriell/osm2sql)
 
 ## Quick start
 
